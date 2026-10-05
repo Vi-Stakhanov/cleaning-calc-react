@@ -1,9 +1,9 @@
 /**
  * src/components/LeadForm.jsx
  * Форма заявки на уборку. Собирает контакты клиента и актуальные данные
- * расчёта (передаются через props из App.jsx), при отправке выводит объект
- * заявки в консоль и показывает сообщение о принятии.
- * Бэкенд отправки (почта/messenger) — следующая задача (ТЗ №3).
+ * расчёта (передаются через props из App.jsx) и отправляет их на сервер
+ * (api/lead.js → письмо владельцу). В режиме разработки сеть не трогаем:
+ * имитируем успех с выводом объекта заявки в консоль.
  */
 import { useState } from 'react';
 
@@ -32,16 +32,18 @@ export default function LeadForm({ state, result }) {
   const [channel, setChannel] = useState('MAX'); // способ связи по умолчанию
   const [time, setTime] = useState(CALL_TIMES[0]); // время звонка по умолчанию
   const [submitted, setSubmitted] = useState(false); // флаг успешной отправки
+  const [sending, setSending] = useState(false);     // идёт ли отправка сейчас
+  const [error, setError] = useState('');            // текст ошибки отправки
 
   // Валидация: без имени и телефона кнопка неактивна
   const isValid = name.trim().length > 0 && phone.trim().length > 0;
 
-  // Отправка формы: собираем объект заявки, логируем и показываем «Спасибо»
-  const handleSubmit = (e) => {
+  // Отправка формы: собираем объект заявки и отправляем на сервер
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isValid) return;
+    if (!isValid || sending) return;
 
-    // Наименование выбранного типа уборки для читаемого лога
+    // Человекочитаемое название выбранного типа уборки
     const cleaningTypeLabel =
       { regular: 'Поддерживающая', general: 'Генеральная',
         postRenovation: 'После ремонта', office: 'Офис' }[state.type] ?? state.type;
@@ -60,8 +62,34 @@ export default function LeadForm({ state, result }) {
       extras: state.extras,                      // { id доп. услуги: количество }
     };
 
-    console.log('Заявка:', lead);
-    setSubmitted(true);
+    // Режим разработки: сеть не дёргаем — имитируем успешную отправку
+    if (import.meta.env.DEV) {
+      console.log('Заявка (dev-заглушка):', lead);
+      setSubmitted(true);
+      return;
+    }
+
+    // Продакшен: POST на серверную функцию Vercel
+    setSending(true);
+    setError('');
+    try {
+      const res = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(lead),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        setSubmitted(true); // ok → показываем «Спасибо»
+      } else {
+        setError('Не удалось отправить заявку. Попробуйте ещё раз или позвоните нам.');
+      }
+    } catch {
+      // Сеть недоступен / сервер упал — то же сообщение
+      setError('Не удалось отправить заявку. Попробуйте ещё раз или позвоните нам.');
+    } finally {
+      setSending(false);
+    }
   };
 
   // После успешной отправки показываем подтверждение вместо формы
@@ -132,10 +160,21 @@ export default function LeadForm({ state, result }) {
         </select>
       </label>
 
-      {/* Кнопка неактивна, пока имя и телефон не заполнены */}
-      <button className="lead-form__submit" type="submit" disabled={!isValid}>
-        Оставить заявку
+      {/* Кнопка неактивна без имени/телефона и на время отправки */}
+      <button
+        className="lead-form__submit"
+        type="submit"
+        disabled={!isValid || sending}
+      >
+        {sending ? 'Отправляем...' : 'Оставить заявку'}
       </button>
+
+      {/* Сообщение об ошибке отправки (в проде) */}
+      {error && (
+        <p className="lead-form__error" role="alert">
+          {error}
+        </p>
+      )}
     </form>
   );
 }

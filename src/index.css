@@ -209,6 +209,13 @@ body {
   font-weight: 600;
 }
 
+/* Сообщение об ошибке отправки заявки (цвет — приглушённый из темы) */
+.lead-form__error {
+  margin: 12px 0 0;
+  color: var(--accent);
+  font-weight: 600;
+}
+
 /* Узкие экраны — колонки складываются в одну */
 @media (max-width: 700px) {
   .app__layout {

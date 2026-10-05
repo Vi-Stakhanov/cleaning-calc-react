@@ -18,4 +18,10 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
   },
+  // Серверные функции Vercel (папка api/) работают в Node.js,
+  // поэтому для них — свои глобальные переменные (process и т.д.)
+  {
+    files: ['api/**/*.js'],
+    languageOptions: { globals: globals.node },
+  },
 ])
