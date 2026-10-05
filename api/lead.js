@@ -36,44 +36,38 @@ function formatExtras(extras) {
   return parts.length ? parts.join('; ') : 'нет';
 }
 
-// Хелпер: JSON-ответ с нужным статусом
-function json(body, status = 200) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { 'Content-Type': 'application/json; charset=utf-8' },
-  });
-}
-
 /**
- * Обработчик Vercel Serverless Function.
- * @param {Request} req  — POST-запрос с JSON-телом заявки
- * @returns {Response}   — { ok: true } или { ok: false, error }
+ * Обработчик Vercel Serverless Function (Node.js runtime).
+ * Формат req/res — стандартный для Node-функций Vercel: тело запроса
+ * уже распарсено (req.body), ответы отдаём через res.status().json().
+ * @param {import('http').IncomingMessage} req  — POST-запрос с JSON-телом заявки
+ * @param {import('http').ServerResponse}  res  — объект ответа
  */
-export default async function handler(req) {
+export default async function handler(req, res) {
   // Разрешаем только POST
   if (req.method !== 'POST') {
-    return json({ ok: false, error: 'Метод не поддерживается' }, 405);
+    return res.status(405).json({ ok: false, error: 'Метод не поддерживается' });
   }
 
-  // Читаем и разбираем JSON-тело; битый JSON → 400
-  let lead;
-  try {
-    lead = await req.json();
-  } catch {
-    return json({ ok: false, error: 'Некорректный JSON' }, 400);
+  // Читаем тело запроса; Vercel парсит JSON сам, но на случай пустого
+  // или битого тела (req.body === undefined) отвечаем 400
+  const body = req.body;
+  if (!body || typeof body !== 'object') {
+    return res.status(400).json({ ok: false, error: 'Некорректный JSON' });
   }
+  const lead = body;
 
   // Валидация обязательных полей: имя и телефон
   const name = String(lead?.name ?? '').trim();
   const phone = String(lead?.phone ?? '').trim();
   if (!name || !phone) {
-    return json({ ok: false, error: 'Имя и телефон обязательны' }, 400);
+    return res.status(400).json({ ok: false, error: 'Имя и телефон обязательны' });
   }
 
   // Проверка наличия секретов в окружении
   const { SMTP_USER, SMTP_PASS, LEAD_EMAIL } = process.env;
   if (!SMTP_USER || !SMTP_PASS || !LEAD_EMAIL) {
-    return json({ ok: false, error: 'Сервер не настроен (нет SMTP_* / LEAD_EMAIL)' }, 500);
+    return res.status(500).json({ ok: false, error: 'Сервер не настроен (нет SMTP_* / LEAD_EMAIL)' });
   }
 
   // Тема письма: «Новая заявка: <тип уборки>, <площадь> м²»
@@ -116,10 +110,10 @@ export default async function handler(req) {
       text,
     });
 
-    return json({ ok: true });
+    return res.status(200).json({ ok: true });
   } catch (err) {
     // Детали SMTP-ошибки клиенту не отдаём, логируем на стороне функции
     console.error('Ошибка отправки письма:', err?.message);
-    return json({ ok: false, error: 'Не удалось отправить письмо' }, 500);
+    return res.status(500).json({ ok: false, error: 'Не удалось отправить письмо' });
   }
 }
