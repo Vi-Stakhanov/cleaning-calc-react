@@ -7,6 +7,7 @@
 import { useMemo, useState } from 'react';
 import CalcForm from './components/CalcForm.jsx';
 import PriceCard from './components/PriceCard.jsx';
+import LeadForm from './components/LeadForm.jsx';
 import { calcPrice } from './calc.js';
 
 // Начальное состояние формы: тип по умолчанию, пустые доп. услуги
@@ -41,8 +42,12 @@ export default function App() {
       <div className="app__layout">
         {/* Левая колонка — форма параметров */}
         <CalcForm state={state} onChange={setState} />
-        {/* Правая колонка — карточка результата */}
-        <PriceCard result={result} />
+        {/* Правая колонка — карточка результата и форма заявки */}
+        <div className="app__aside">
+          <PriceCard result={result} />
+          {/* Заявка получает актуальные параметры и результат расчёта */}
+          <LeadForm state={state} result={result} />
+        </div>
       </div>
     </main>
   );

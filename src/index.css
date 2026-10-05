@@ -11,7 +11,7 @@
 
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
+  font-family: var(--font-base);
   background: var(--bg);
   color: var(--text);
 }
@@ -118,6 +118,95 @@ body {
   justify-content: space-between;
   padding: 4px 0;
   border-top: 1px solid var(--border);
+}
+
+/* Правая колонка: карточка цены + форма заявки */
+.app__aside {
+  display: grid;
+  gap: 16px;
+}
+
+/* ---- Форма заявки (LeadForm) ---- */
+.lead-form {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  font-family: var(--font-base);
+}
+
+.lead-form__title {
+  margin: 0 0 12px;
+  color: var(--brand);
+  font-size: 1.1rem;
+}
+
+/* Текстовые поля, телефон и select */
+.lead-form__field {
+  display: block;
+  margin: 8px 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.lead-form__field input,
+.lead-form__field select {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 8px 10px;
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius);
+  background: var(--input-bg);
+  color: var(--text);
+  font: inherit;
+}
+
+/* Группа radio «Способ связи» */
+.lead-form__group {
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius);
+  margin: 8px 0;
+  padding: 8px 10px;
+}
+
+.lead-form__group legend {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: 0 4px;
+}
+
+.lead-form__radio {
+  display: block;
+  margin: 4px 0;
+  color: var(--text);
+}
+
+/* Кнопка отправки */
+.lead-form__submit {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--brand);
+  color: var(--surface);
+  font: inherit;
+  cursor: pointer;
+}
+
+.lead-form__submit:disabled {
+  opacity: 0.5;              /* неактивная кнопка без имени/телефона */
+  cursor: not-allowed;
+}
+
+/* Сообщение после успешной отправки */
+.lead-form__success {
+  margin: 0;
+  color: var(--brand);
+  font-weight: 600;
 }
 
 /* Узкие экраны — колонки складываются в одну */

@@ -13,4 +13,15 @@
   --surface: #ffffff;                          /* фон карточек */
   --text: color-mix(in srgb, var(--brand) 80%, black); /* основной текст */
   --border: color-mix(in srgb, var(--brand) 25%, var(--bg)); /* границы */
+
+  /* расширение темы (шаг 2): типографика, тени, поля ввода */
+  --font-base: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+                                               /* базовый шрифт (системный sans-serif) */
+  --shadow: 0 2px 8px color-mix(in srgb, var(--brand) 15%, transparent);
+                                               /* мягкая тень карточек и формы */
+  --input-bg: #ffffff;                         /* фон полей ввода */
+  --input-border: color-mix(in srgb, var(--brand) 35%, var(--bg));
+                                               /* рамка полей ввода */
+  --text-muted: color-mix(in srgb, var(--text) 55%, var(--bg));
+                                               /* приглушённый текст (подсказки) */
 }
