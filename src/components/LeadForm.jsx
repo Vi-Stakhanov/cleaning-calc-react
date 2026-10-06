@@ -133,29 +133,38 @@ export default function LeadForm({ state, result }) {
   return (
     <form className="lead-form" onSubmit={handleSubmit} noValidate>
       <h2 className="lead-form__title">Оставить заявку</h2>
+      <p className="lead-form__subtitle">
+        Перезвоним за 5 минут и уточним детали
+      </p>
 
-      {/* Имя — обязательное поле */}
+      {/* Имя — обязательное поле, с иконкой человека */}
       <label className="lead-form__field">
         Имя
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Ваше имя"
-          required
-        />
+        <span className="lead-form__input-wrap">
+          <span className="lead-form__icon" aria-hidden="true">👤</span>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Ваше имя"
+            required
+          />
+        </span>
       </label>
 
-      {/* Телефон — обязательный, маска через formatPhone (без сторонних библиотек) */}
+      {/* Телефон — обязательный, маска через formatPhone (без сторонних библиотек), с иконкой телефона */}
       <label className="lead-form__field">
         Телефон
-        <input
-          type="tel"
-          value={phone}
-          onChange={(e) => setPhone(formatPhone(e.target.value))}
-          placeholder="+7 (___) ___-__-__"
-          required
-        />
+        <span className="lead-form__input-wrap">
+          <span className="lead-form__icon" aria-hidden="true">📞</span>
+          <input
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(formatPhone(e.target.value))}
+            placeholder="+7 (___) ___-__-__"
+            required
+          />
+        </span>
       </label>
 
       {/* Способ связи — radio, по умолчанию MAX */}

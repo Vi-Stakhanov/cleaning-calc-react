@@ -18,7 +18,7 @@ body {
 
 /* Контейнер приложения */
 .app {
-  max-width: 960px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 24px;
 }
@@ -30,8 +30,8 @@ body {
 /* Двухколоночная раскладка: форма + карточка цены */
 .app__layout {
   display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 24px;
+  grid-template-columns: 1fr 360px;
+  gap: 32px;
   align-items: start;
 }
 
@@ -81,12 +81,13 @@ body {
 
 /* ---- Карточка цены ---- */
 .price-card {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border: none;
+  border-radius: 16px;
   background: var(--surface);
-  padding: 16px;
+  padding: 24px;
   position: sticky;
   top: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .price-card__title {
@@ -95,14 +96,15 @@ body {
 }
 
 .price-card__total {
-  font-size: 2rem;
+  font-size: 36px;
   font-weight: 700;
-  color: var(--accent);
+  color: #1a73e8;
   margin: 0;
 }
 
 .price-card__range {
-  color: var(--brand);
+  color: #666;
+  font-size: 14px;
   margin: 4px 0 12px;
 }
 
@@ -126,53 +128,97 @@ body {
   gap: 16px;
 }
 
-/* ---- Форма заявки (LeadForm) ---- */
+/* ---- Форма заявки: выразительный CTA-блок ---- */
 .lead-form {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  padding: 16px;
-  box-shadow: var(--shadow);
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%);
+  padding: 32px;
+  box-shadow: 0 8px 32px rgba(26, 115, 232, 0.3);
   font-family: var(--font-base);
+  color: #fff;
 }
 
 .lead-form__title {
-  margin: 0 0 12px;
-  color: var(--brand);
-  font-size: 1.1rem;
+  margin: 0;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.lead-form__subtitle {
+  margin: 6px 0 16px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
 }
 
 /* Текстовые поля, телефон и select */
 .lead-form__field {
   display: block;
   margin: 8px 0;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 0.9rem;
+}
+
+/* Обёртка поля с иконкой: белый фон, скругление 12px, высота 48px */
+.lead-form__input-wrap {
+  position: relative;
+  display: block;
+  margin-top: 4px;
+}
+
+.lead-form__icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  line-height: 1;
+  filter: grayscale(1);
+  opacity: 0.55;
+  pointer-events: none;
 }
 
 .lead-form__field input,
 .lead-form__field select {
   display: block;
   width: 100%;
-  margin-top: 4px;
-  padding: 8px 10px;
-  border: 1px solid var(--input-border);
-  border-radius: var(--radius);
-  background: var(--input-bg);
+  height: 48px;
+  padding: 0 12px 0 42px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.95);
   color: var(--text);
   font: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Select без иконки — отступ слева обычный */
+.lead-form__field select {
+  padding-left: 12px;
+}
+
+.lead-form__field input::placeholder {
+  color: #666;
+}
+
+.lead-form__field input:focus,
+.lead-form__field select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
 }
 
 /* Группа radio «Способ связи» */
 .lead-form__group {
-  border: 1px solid var(--input-border);
-  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
   margin: 8px 0;
   padding: 8px 10px;
 }
 
 .lead-form__group legend {
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 0.9rem;
   padding: 0 4px;
 }
@@ -180,21 +226,32 @@ body {
 .lead-form__radio {
   display: block;
   margin: 4px 0;
-  color: var(--text);
+  color: #fff;
 }
 
-/* Кнопка отправки */
+/* Кнопка отправки — белая на синем CTA */
 .lead-form__submit {
   display: block;
   width: 100%;
+  height: 56px;
   margin-top: 12px;
-  padding: 10px 16px;
+  padding: 0 16px;
   border: none;
-  border-radius: var(--radius);
-  background: var(--brand);
-  color: var(--surface);
-  font: inherit;
+  border-radius: 12px;
+  background: #fff;
+  color: #1a73e8;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: inherit;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.lead-form__submit:hover:not(:disabled) {
+  background: #f0f4ff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
 }
 
 .lead-form__submit:disabled {
@@ -205,20 +262,29 @@ body {
 /* Сообщение после успешной отправки */
 .lead-form__success {
   margin: 0;
-  color: var(--brand);
+  color: #fff;
   font-weight: 600;
 }
 
-/* Сообщение об ошибке отправки заявки (цвет — приглушённый из темы) */
+/* Сообщение об ошибке отправки заявки (в проде) */
 .lead-form__error {
   margin: 12px 0 0;
-  color: var(--accent);
+  color: #ffd28a;
   font-weight: 600;
 }
 
-/* Узкие экраны — колонки складываются в одну */
-@media (max-width: 700px) {
+/* Мобильные экраны (<768px) — колонки складываются в одну, заявка на всю ширину */
+@media (max-width: 768px) {
   .app__layout {
     grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .lead-form {
+    width: 100%;
+  }
+
+  .price-card {
+    position: static;
   }
 }
