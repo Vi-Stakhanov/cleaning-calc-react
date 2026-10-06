@@ -12,15 +12,29 @@ const CHANNELS = ['MAX', 'Telegram', 'Позвонить'];
 
 // Форматирование телефона в маску +7 (___) ___-__-__ без сторонних библиотек
 function formatPhone(value) {
+  // Убираем всё кроме цифр
   let digits = value.replace(/\D/g, '');
-  if (digits.length > 0 && digits[0] === '8') digits = '7' + digits.slice(1);
-  if (digits.length > 0 && digits[0] !== '7') digits = '7' + digits;
-  let result = '+7';
-  if (digits.length > 1) result += ' (' + digits.slice(1, 4);
-  if (digits.length >= 4) result += ') ' + digits.slice(4, 7);
-  if (digits.length >= 7) result += '-' + digits.slice(7, 9);
-  if (digits.length >= 9) result += '-' + digits.slice(9, 11);
-  return result;
+
+  // Если начинается с 8, меняем на 7
+  if (digits.startsWith('8')) {
+    digits = '7' + digits.slice(1);
+  }
+
+  // Если не начинается с 7, добавляем 7
+  if (digits.length > 0 && !digits.startsWith('7')) {
+    digits = '7' + digits;
+  }
+
+  // Ограничиваем 11 цифрами
+  digits = digits.slice(0, 11);
+
+  // Форматируем
+  if (digits.length === 0) return '';
+  if (digits.length === 1) return '+7';
+  if (digits.length <= 4) return '+7 (' + digits.slice(1);
+  if (digits.length <= 7) return '+7 (' + digits.slice(1, 4) + ') ' + digits.slice(4);
+  if (digits.length <= 9) return '+7 (' + digits.slice(1, 4) + ') ' + digits.slice(4, 7) + '-' + digits.slice(7);
+  return '+7 (' + digits.slice(1, 4) + ') ' + digits.slice(4, 7) + '-' + digits.slice(7, 9) + '-' + digits.slice(9, 11);
 }
 
 // Удобное время для звонка (select)
