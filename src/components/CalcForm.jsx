@@ -3,14 +3,13 @@
  * Форма параметров уборки: тип (radio), площадь/комнаты/санузлы (number),
  * доп. услуги (checkbox + количество). Никакого расчёта здесь нет —
  * компонент только собирает значения и отдаёт их наверх через onChange.
- * UI: Tailwind CSS, три карточки.
+ * UI: обычный CSS (src/App.css), три карточки.
  */
 import { TARIFFS, EXTRAS } from '../config/pricing.js';
 
-const cardCls = 'bg-white rounded-2xl p-6 shadow-sm border border-gray-100';
-const cardTitleCls = 'text-lg font-semibold text-gray-900 mb-4';
-const inputCls =
-  'w-full h-12 px-4 rounded-xl border border-gray-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all outline-none';
+const cardCls = 'card';
+const cardTitleCls = 'card-title';
+const inputCls = 'input input-plain';
 
 export default function CalcForm({ state, onChange }) {
   // Универсальный обработчик: меняет одно поле состояния и зовёт onChange
@@ -28,15 +27,15 @@ export default function CalcForm({ state, onChange }) {
     setField('extras', { ...state.extras, [id]: Math.max(0, Number(qty) || 0) });
 
   return (
-    <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+    <form className="calc-form" onSubmit={(e) => e.preventDefault()}>
       {/* Тип уборки — radio-группа */}
       <fieldset className={cardCls}>
         <legend className={cardTitleCls}>Тип уборки</legend>
-        <div className="space-y-2">
+        <div className="radio-list">
           {Object.values(TARIFFS).map((t) => (
             <label
               key={t.id}
-              className="flex items-center gap-3 cursor-pointer text-gray-700 hover:text-gray-900 transition-colors"
+              className="radio-label"
             >
               <input
                 type="radio"
@@ -44,7 +43,7 @@ export default function CalcForm({ state, onChange }) {
                 value={t.id}
                 checked={state.type === t.id}
                 onChange={() => setField('type', t.id)}
-                className="w-5 h-5 accent-blue-600"
+                className="choice-input"
               />
               {t.label} ({t.pricePerM2} ₽/м²)
             </label>
@@ -55,9 +54,9 @@ export default function CalcForm({ state, onChange }) {
       {/* Числовые параметры: площадь, комнаты, санузлы */}
       <fieldset className={cardCls}>
         <legend className={cardTitleCls}>Параметры помещения</legend>
-        <div className="space-y-4">
-          <label className="block">
-            <span className="block text-sm text-gray-500 mb-1">Площадь, м²</span>
+        <div>
+          <label className="param-field">
+            <span className="param-label">Площадь, м²</span>
             <input
               type="number"
               min="1"
@@ -67,8 +66,8 @@ export default function CalcForm({ state, onChange }) {
             />
           </label>
 
-          <label className="block">
-            <span className="block text-sm text-gray-500 mb-1">Комнаты</span>
+          <label className="param-field">
+            <span className="param-label">Комнаты</span>
             <input
               type="number"
               min="0"
@@ -78,8 +77,8 @@ export default function CalcForm({ state, onChange }) {
             />
           </label>
 
-          <label className="block">
-            <span className="block text-sm text-gray-500 mb-1">Санузлы</span>
+          <label className="param-field">
+            <span className="param-label">Санузлы</span>
             <input
               type="number"
               min="0"
@@ -94,17 +93,17 @@ export default function CalcForm({ state, onChange }) {
       {/* Доп. услуги — checkbox + количество (участвует в расчёте) */}
       <fieldset className={cardCls}>
         <legend className={cardTitleCls}>Допуслуги</legend>
-        <div className="space-y-3">
+        <div className="checkbox-list">
           {EXTRAS.map((extra) => {
             const qty = state.extras[extra.id] || 0;
             return (
-              <div key={extra.id} className="flex items-center justify-between gap-3">
-                <label className="flex items-center gap-3 cursor-pointer text-gray-700 hover:text-gray-900 transition-colors">
+              <div key={extra.id} className="extra-row">
+                <label className="checkbox-label">
                   <input
                     type="checkbox"
                     checked={qty > 0}
                     onChange={(e) => toggleExtra(extra.id, e.target.checked)}
-                    className="w-5 h-5 accent-blue-600"
+                    className="choice-input"
                   />
                   {extra.label} — {extra.price} ₽/{extra.unit}
                 </label>
@@ -115,7 +114,7 @@ export default function CalcForm({ state, onChange }) {
                     value={qty}
                     onChange={(e) => setExtraQty(extra.id, e.target.value)}
                     aria-label={`Количество: ${extra.label}`}
-                    className="w-20 h-10 px-3 rounded-xl border border-gray-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all outline-none"
+                    className="qty-input"
                   />
                 )}
               </div>

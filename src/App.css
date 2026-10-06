@@ -1,0 +1,517 @@
+/**
+ * src/App.css
+ * Обычный CSS вместо Tailwind: базовые стили + все компоненты калькулятора.
+ * Цвета/размеры соответствуют ранее собранному на Tailwind дизайну.
+ */
+
+/* Базовые стили */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f5f7fa;
+  color: #1a1a1a;
+  line-height: 1.6;
+}
+
+/* Контейнер */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* Хэдер */
+.header {
+  background: white;
+  border-bottom: 1px solid #f3f4f6;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-logo-icon {
+  width: 40px;
+  height: 40px;
+  background: #2563eb;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #111827;
+  line-height: 1.3;
+}
+
+.header-subtitle {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.3;
+}
+
+.header-phone {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.header-phone:hover {
+  color: #1d4ed8;
+}
+
+/* Главный заголовок страницы */
+.page-title {
+  font-size: 30px;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.page-subtitle {
+  color: #6b7280;
+  margin-bottom: 32px;
+}
+
+/* Сетка */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr 380px;
+  }
+}
+
+/* Правая колонка — sticky под хэдером */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (min-width: 1024px) {
+  .sidebar {
+    position: sticky;
+    top: 96px; /* хэдер (~73px) + отступ */
+  }
+}
+
+/* Карточки калькулятора */
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f3f4f6;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 16px;
+}
+
+/* Блок стоимости */
+.price-block {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f3f4f6;
+}
+
+.price-label {
+  font-size: 14px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.price-value {
+  font-size: 36px;
+  font-weight: bold;
+  color: #111827;
+  margin: 8px 0;
+  line-height: 1.2;
+}
+
+.price-range {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.price-details {
+  border-top: 1px solid #f3f4f6;
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+/* Блок заявки (CTA) */
+.cta-block {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.08);
+  border: 2px solid #2563eb;
+}
+
+.cta-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.cta-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+/* Поля формы */
+.form-group {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: block;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px 0 44px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 16px;
+  transition: all 0.2s;
+  background: white;
+  color: #1a1a1a;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.input::placeholder {
+  color: #9ca3af;
+}
+
+/* Поле без иконки (числовые параметры) */
+.input-plain {
+  padding-left: 16px;
+}
+
+/* Radio группы */
+.radio-group {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.radio-label input[type="radio"] {
+  accent-color: #2563eb;
+}
+
+/* Select */
+.select {
+  width: 100%;
+  height: 48px;
+  padding: 0 40px 0 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 16px;
+  background: white;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  cursor: pointer;
+  color: #1a1a1a;
+  transition: all 0.2s;
+}
+
+.select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Кнопка */
+.button {
+  width: 100%;
+  height: 56px;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  margin-top: 8px;
+}
+
+.button:hover:not(:disabled) {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+}
+
+.button:disabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Сообщение об ошибке */
+.error-text {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #dc2626;
+}
+
+/* Футер */
+.footer {
+  background: white;
+  border-top: 1px solid #f3f4f6;
+  margin-top: 48px;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 16px;
+}
+
+.social-icon {
+  width: 40px;
+  height: 40px;
+  background: #f3f4f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.social-icon:hover {
+  background: #2563eb;
+  color: white;
+}
+
+.social-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.footer-brand {
+  font-size: 14px;
+  color: #6b7280;
+  margin-right: 12px;
+}
+
+.footer-brand a,
+.footer-brand strong {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Чекбоксы допуслуг */
+.checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  accent-color: #2563eb;
+  width: 18px;
+  height: 18px;
+}
+
+/* Radio тип уборки */
+.radio-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Поля параметров (площадь, комнаты, санузлы) */
+.param-field {
+  margin-bottom: 16px;
+}
+
+.param-label {
+  display: block;
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.param-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.param-input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+/* Мобильная версия */
+@media (max-width: 1023px) {
+  .cta-block {
+    position: static;
+  }
+}
+
+/* Дополнительные классы для компонентов */
+.calc-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.choice-input {
+  accent-color: #2563eb;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.extra-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.qty-input {
+  width: 80px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+
+.qty-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-group-last {
+  margin-bottom: 8px;
+}
+
+.thanks-text {
+  color: #374151;
+}
+
+/* Иконки внутри полей формы (SVG наследуют размер/цвет от .input-icon) */
+.input-icon svg {
+  width: 20px;
+  height: 20px;
+}

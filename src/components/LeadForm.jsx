@@ -4,7 +4,7 @@
  * данные расчёта (через props из App.jsx) и отправляет их на сервер
  * (api/lead.js → письмо владельцу). В режиме разработки сеть не трогаем:
  * имитируем успех с выводом объекта заявки в консоль.
- * UI: Tailwind CSS, акцентная карточка с синей обводкой.
+ * UI: обычный CSS (src/App.css), акцентная карточка с синей обводкой.
  */
 import { useState } from 'react';
 
@@ -47,22 +47,19 @@ const CALL_TIMES = [
   'Любое',
 ];
 
-const inputCls =
-  'w-full h-12 pl-11 pr-4 rounded-xl border border-gray-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all outline-none placeholder:text-gray-400';
+const inputCls = 'input';
 
 // Select: pl-4 — нормальный отступ слева, pr-10 — место для стрелки справа
-const selectCls =
-  'w-full h-12 pl-4 pr-10 rounded-xl border border-gray-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all outline-none bg-white';
+const selectCls = 'select';
 
 // Минималистичные SVG-иконки для полей формы (stroke, 20px, серые)
-const iconCls = 'w-5 h-5 text-gray-400';
 const IconUser = () => (
-  <svg className={iconCls} fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true">
+  <svg fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true">
     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.784-7.499-2.132Z" />
   </svg>
 );
 const IconPhone = () => (
-  <svg className={iconCls} fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true">
+  <svg fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true">
     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.058-1.172.44l-.913 1.217c-.287.382-.796.523-1.234.338a12.035 12.035 0 0 1-7.143-7.143c-.185-.438-.044-.947.338-1.234l1.217-.913c.382-.27.55-.732.44-1.172L8.954 3.6c-.125-.5-.575-.852-1.091-.852H6.5a2.25 2.25 0 0 0-2.25 2.25V6.75Z" />
   </svg>
 );
@@ -143,8 +140,8 @@ export default function LeadForm({ state, result }) {
   // После успешной отправки показываем подтверждение вместо формы
   if (submitted) {
     return (
-      <section className="bg-white rounded-2xl p-6 shadow-lg border-2 border-blue-600">
-        <p className="text-gray-700" role="status">
+      <section className="cta-block">
+        <p className="thanks-text" role="status">
           Спасибо! Заявка принята, мы свяжемся с вами в выбранное время.
         </p>
       </section>
@@ -152,19 +149,15 @@ export default function LeadForm({ state, result }) {
   }
 
   return (
-    <form
-      className="bg-white rounded-2xl p-6 shadow-lg border-2 border-blue-600"
-      onSubmit={handleSubmit}
-      noValidate
-    >
-      <h2 className="text-xl font-bold text-gray-900">Оставить заявку</h2>
-      <p className="text-sm text-gray-500 mb-6">Перезвоним за 5 минут</p>
+    <form className="cta-block" onSubmit={handleSubmit} noValidate>
+      <h2 className="cta-title">Оставить заявку</h2>
+      <p className="cta-subtitle">Перезвоним за 5 минут</p>
 
       {/* Имя — обязательное поле, с иконкой человека */}
-      <label className="block mb-4">
-        <span className="block text-sm text-gray-500 mb-1">Имя</span>
-        <span className="relative block">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+      <label className="form-group">
+        <span className="form-label">Имя</span>
+        <span className="input-wrapper">
+          <span className="input-icon">
             <IconUser />
           </span>
           <input
@@ -179,10 +172,10 @@ export default function LeadForm({ state, result }) {
       </label>
 
       {/* Телефон — обязательный, маска через formatPhone (без сторонних библиотек), с иконкой телефона */}
-      <label className="block mb-4">
-        <span className="block text-sm text-gray-500 mb-1">Телефон</span>
-        <span className="relative block">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+      <label className="form-group">
+        <span className="form-label">Телефон</span>
+        <span className="input-wrapper">
+          <span className="input-icon">
             <IconPhone />
           </span>
           <input
@@ -197,18 +190,18 @@ export default function LeadForm({ state, result }) {
       </label>
 
       {/* Способ связи — radio, по умолчанию MAX */}
-      <fieldset className="mb-4">
-        <legend className="block text-sm text-gray-500 mb-1">Способ связи</legend>
-        <div className="flex flex-wrap gap-x-4 gap-y-2">
+      <fieldset className="form-group">
+        <legend className="form-label">Способ связи</legend>
+        <div className="radio-group">
           {CHANNELS.map((ch) => (
-            <label key={ch} className="flex items-center gap-2 cursor-pointer text-gray-700">
+            <label key={ch} className="radio-label">
               <input
                 type="radio"
                 name="channel"
                 value={ch}
                 checked={channel === ch}
                 onChange={() => setChannel(ch)}
-                className="w-5 h-5 accent-blue-600"
+                className="choice-input"
               />
               {ch}
             </label>
@@ -217,8 +210,8 @@ export default function LeadForm({ state, result }) {
       </fieldset>
 
       {/* Удобное время для звонка — select */}
-      <label className="block mb-6">
-        <span className="block text-sm text-gray-500 mb-1">Удобное время для звонка</span>
+      <label className="form-group form-group-last">
+        <span className="form-label">Удобное время для звонка</span>
         <select
           value={time}
           onChange={(e) => setTime(e.target.value)}
@@ -236,14 +229,14 @@ export default function LeadForm({ state, result }) {
       <button
         type="submit"
         disabled={!isValid || sending}
-        className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base rounded-xl transition-all shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-blue-600/20"
+        className="button"
       >
         {sending ? 'Отправляем...' : 'Оставить заявку'}
       </button>
 
       {/* Сообщение об ошибке отправки (в проде) */}
       {error && (
-        <p className="mt-3 text-sm text-red-600" role="alert">
+        <p className="error-text" role="alert">
           {error}
         </p>
       )}
