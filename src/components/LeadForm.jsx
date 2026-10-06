@@ -7,6 +7,7 @@
  * UI: обычный CSS (src/App.css), акцентная карточка с синей обводкой.
  */
 import { useState } from 'react';
+import { EXTRAS } from '../config/pricing.js';
 
 // Способы связи с клиентом (по умолчанию — MAX)
 const CHANNELS = ['MAX', 'Telegram', 'Позвонить'];
@@ -104,7 +105,17 @@ export default function LeadForm({ state, result }) {
       area: Number(state.area),                  // площадь, м²
       rooms: Number(state.rooms),                // комнаты
       bathrooms: Number(state.bathrooms),        // санузлы
-      extras: state.extras,                      // { id доп. услуги: количество }
+      // Массив выбранных доп. услуг в читаемом виде для бэкенда (Telegram/почта):
+      // [{ id, label, qty, price }] — раньше передавался объект { id: qty },
+      // из-за чего в заявке всегда было «Допуслуги: нет».
+      extras: EXTRAS
+        .filter((ex) => Math.max(0, Number(state.extras?.[ex.id]) || 0) > 0)
+        .map((ex) => ({
+          id: ex.id,
+          label: ex.label,
+          qty: Math.max(0, Number(state.extras[ex.id]) || 0),
+          price: ex.price,
+        })),
     };
 
     // Режим разработки: сеть не дёргаем — имитируем успешную отправку

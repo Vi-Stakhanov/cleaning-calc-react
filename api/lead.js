@@ -56,10 +56,10 @@ export default async function handler(req, res) {
     },
   });
 
-  // Допуслуги: список «название: цена», либо «нет»
+  // Допуслуги: список «название — цена × количество», либо «нет»
   const extrasText =
-    extras && extras.length > 0
-      ? extras.map((e) => `${e.label}: ${e.price} ₽`).join('\n')
+    Array.isArray(extras) && extras.length > 0
+      ? extras.map((e) => `${e.label} — ${e.price} ₽ × ${e.qty || 1}`).join('\n')
       : 'нет';
 
   // Письмо владельцу
