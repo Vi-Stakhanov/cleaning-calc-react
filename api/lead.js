@@ -87,7 +87,31 @@ ${extrasText}
   };
 
   try {
+    // Отправка письма владельцу через Yandex SMTP
     await transporter.sendMail(mailOptions);
+
+    // Уведомление в Telegram (опционально): если переменных нет — пропускаем
+    const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
+    const telegramChatId = process.env.TELEGRAM_CHAT_ID;
+
+    if (telegramToken && telegramChatId) {
+      try {
+        const telegramMessage = `🔔 Новая заявка\n\nИмя: ${name}\nТелефон: ${phone}\nСвязь: ${channel || 'не указан'}\nВремя: ${time || 'не указано'}\n\nТип: ${cleaningType || 'не указан'}\nПлощадь: ${area || 0} м²\nКомнаты: ${rooms || 0}\nСанузлы: ${bathrooms || 0}\n\nДопуслуги:\n${extrasText}\n\nИтого: ${totalPrice || 0} ₽\nДиапазон: ${priceRange || 'не указан'}`;
+
+        await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: telegramChatId,
+            text: telegramMessage,
+          }),
+        });
+      } catch (tgError) {
+        // Ошибка Telegram не должна ломать основной ответ клиенту
+        console.error('Telegram error:', tgError);
+      }
+    }
+
     return res.status(200).json({ ok: true });
   } catch (error) {
     console.error('SMTP error:', error);
