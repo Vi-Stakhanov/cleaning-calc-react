@@ -11,7 +11,7 @@ export default function PriceCard({ result }) {
 
   return (
     <aside className="price-block" aria-live="polite">
-      <h2 className="label-uppercase">СТОИМОСТЬ</h2>
+      <h2 className="card-title">Стоимость</h2>
 
       {/* Итоговая цена */}
       <p className="price-value">{formatRub(total)}</p>
