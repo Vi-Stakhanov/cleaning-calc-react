@@ -50,6 +50,23 @@ const CALL_TIMES = [
 const inputCls =
   'w-full h-12 pl-11 pr-4 rounded-xl border border-gray-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all outline-none placeholder:text-gray-400';
 
+// Select без иконки — отступ слева меньше (px-2)
+const selectCls =
+  'w-full h-12 px-2 rounded-xl border border-gray-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all outline-none bg-white';
+
+// Минималистичные SVG-иконки для полей формы (stroke, 20px, серые)
+const iconCls = 'w-5 h-5 text-gray-400';
+const IconUser = () => (
+  <svg className={iconCls} fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.784-7.499-2.132Z" />
+  </svg>
+);
+const IconPhone = () => (
+  <svg className={iconCls} fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.058-1.172.44l-.913 1.217c-.287.382-.796.523-1.234.338a12.035 12.035 0 0 1-7.143-7.143c-.185-.438-.044-.947.338-1.234l1.217-.913c.382-.27.55-.732.44-1.172L8.954 3.6c-.125-.5-.575-.852-1.091-.852H6.5a2.25 2.25 0 0 0-2.25 2.25V6.75Z" />
+  </svg>
+);
+
 /**
  * @param {Object} props
  * @param {Object} props.state  — текущие параметры формы калькулятора
@@ -147,7 +164,9 @@ export default function LeadForm({ state, result }) {
       <label className="block mb-4">
         <span className="block text-sm text-gray-500 mb-1">Имя</span>
         <span className="relative block">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-base pointer-events-none" aria-hidden="true">👤</span>
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+            <IconUser />
+          </span>
           <input
             type="text"
             value={name}
@@ -163,7 +182,9 @@ export default function LeadForm({ state, result }) {
       <label className="block mb-4">
         <span className="block text-sm text-gray-500 mb-1">Телефон</span>
         <span className="relative block">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-base pointer-events-none" aria-hidden="true">📞</span>
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+            <IconPhone />
+          </span>
           <input
             type="tel"
             value={phone}
@@ -201,7 +222,7 @@ export default function LeadForm({ state, result }) {
         <select
           value={time}
           onChange={(e) => setTime(e.target.value)}
-          className={inputCls}
+          className={selectCls}
         >
           {CALL_TIMES.map((t) => (
             <option key={t} value={t}>
