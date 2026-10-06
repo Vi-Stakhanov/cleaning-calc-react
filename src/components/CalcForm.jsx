@@ -8,7 +8,7 @@
 import { TARIFFS, EXTRAS } from '../config/pricing.js';
 
 const cardCls = 'card';
-const cardTitleCls = 'section-title';
+const cardTitleCls = 'card-title';
 const inputCls = 'input input-plain';
 
 export default function CalcForm({ state, onChange }) {
