@@ -10,6 +10,19 @@ import { useState } from 'react';
 // Способы связи с клиентом (по умолчанию — MAX)
 const CHANNELS = ['MAX', 'Telegram', 'Позвонить'];
 
+// Форматирование телефона в маску +7 (___) ___-__-__ без сторонних библиотек
+function formatPhone(value) {
+  let digits = value.replace(/\D/g, '');
+  if (digits.length > 0 && digits[0] === '8') digits = '7' + digits.slice(1);
+  if (digits.length > 0 && digits[0] !== '7') digits = '7' + digits;
+  let result = '+7';
+  if (digits.length > 1) result += ' (' + digits.slice(1, 4);
+  if (digits.length >= 4) result += ') ' + digits.slice(4, 7);
+  if (digits.length >= 7) result += '-' + digits.slice(7, 9);
+  if (digits.length >= 9) result += '-' + digits.slice(9, 11);
+  return result;
+}
+
 // Удобное время для звонка (select)
 const CALL_TIMES = [
   'Как можно скорее',
@@ -35,8 +48,8 @@ export default function LeadForm({ state, result }) {
   const [sending, setSending] = useState(false);     // идёт ли отправка сейчас
   const [error, setError] = useState('');            // текст ошибки отправки
 
-  // Валидация: без имени и телефона кнопка неактивна
-  const isValid = name.trim().length > 0 && phone.trim().length > 0;
+  // Валидация: без имени и полного телефона (11 цифр) кнопка неактивна
+  const isValid = name.trim().length > 0 && phone.replace(/\D/g, '').length >= 11;
 
   // Отправка формы: собираем объект заявки и отправляем на сервер
   const handleSubmit = async (e) => {
@@ -50,7 +63,7 @@ export default function LeadForm({ state, result }) {
 
     const lead = {
       name: name.trim(),
-      phone: phone.trim(),
+      phone: phone.replace(/\D/g, ''), // на сервер — чистые цифры: 79161234567
       channel,                                   // MAX / Telegram / Позвонить
       time,                                      // удобное время для звонка
       totalPrice: result.total,                  // итоговая цена, ₽
@@ -119,13 +132,13 @@ export default function LeadForm({ state, result }) {
         />
       </label>
 
-      {/* Телефон — обязательный, обычный input (без сторонней маски) */}
+      {/* Телефон — обязательный, маска через formatPhone (без сторонних библиотек) */}
       <label className="lead-form__field">
         Телефон
         <input
           type="tel"
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={(e) => setPhone(formatPhone(e.target.value))}
           placeholder="+7 (___) ___-__-__"
           required
         />
