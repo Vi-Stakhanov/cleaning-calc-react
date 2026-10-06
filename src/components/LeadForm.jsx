@@ -50,9 +50,9 @@ const CALL_TIMES = [
 const inputCls =
   'w-full h-12 pl-11 pr-4 rounded-xl border border-gray-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all outline-none placeholder:text-gray-400';
 
-// Select без иконки — отступ слева меньше (px-2)
+// Select: pl-4 — нормальный отступ слева, pr-10 — место для стрелки справа
 const selectCls =
-  'w-full h-12 px-2 rounded-xl border border-gray-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all outline-none bg-white';
+  'w-full h-12 pl-4 pr-10 rounded-xl border border-gray-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all outline-none bg-white';
 
 // Минималистичные SVG-иконки для полей формы (stroke, 20px, серые)
 const iconCls = 'w-5 h-5 text-gray-400';
