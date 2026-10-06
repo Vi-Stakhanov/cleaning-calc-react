@@ -1,7 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './theme.css'  // CSS-переменные темы — подключаются первыми
-import './index.css'  // базовые стили каркаса
+import './index.css'
 import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(

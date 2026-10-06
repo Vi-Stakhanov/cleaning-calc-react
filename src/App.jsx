@@ -2,7 +2,7 @@
  * src/App.jsx
  * Корневой компонент калькулятора: хранит состояние формы,
  * мгновенно пересчитывает цену (через calcPrice) и передаёт
- * результат в карточку цены.
+ * результат в карточку цены. Layout: Tailwind CSS.
  */
 import { useMemo, useState } from 'react';
 import CalcForm from './components/CalcForm.jsx';
@@ -36,14 +36,18 @@ export default function App() {
   );
 
   return (
-    <main className="app">
-      <h1 className="app__title">Калькулятор стоимости уборки</h1>
+    <main className="max-w-[1100px] mx-auto px-6 py-8">
+      <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        Калькулятор стоимости уборки
+      </h1>
+      <p className="text-gray-500 mb-8">Рассчитайте цену за 30 секунд</p>
 
-      <div className="app__layout">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 items-start">
         {/* Левая колонка — форма параметров */}
         <CalcForm state={state} onChange={setState} />
-        {/* Правая колонка — карточка результата и форма заявки */}
-        <div className="app__aside">
+
+        {/* Правая колонка — sticky: карточка результата + форма заявки */}
+        <div className="lg:sticky lg:top-8 space-y-6">
           <PriceCard result={result} />
           {/* Заявка получает актуальные параметры и результат расчёта */}
           <LeadForm state={state} result={result} />

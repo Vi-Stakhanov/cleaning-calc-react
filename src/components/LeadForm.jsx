@@ -1,9 +1,10 @@
 /**
  * src/components/LeadForm.jsx
- * Форма заявки на уборку. Собирает контакты клиента и актуальные данные
- * расчёта (передаются через props из App.jsx) и отправляет их на сервер
+ * Форма заявки на уборку (CTA-блок). Собирает контакты клиента и актуальные
+ * данные расчёта (через props из App.jsx) и отправляет их на сервер
  * (api/lead.js → письмо владельцу). В режиме разработки сеть не трогаем:
  * имитируем успех с выводом объекта заявки в консоль.
+ * UI: Tailwind CSS, акцентная карточка с синей обводкой.
  */
 import { useState } from 'react';
 
@@ -45,6 +46,9 @@ const CALL_TIMES = [
   '18:00–21:00',
   'Любое',
 ];
+
+const inputCls =
+  'w-full h-12 pl-11 pr-4 rounded-xl border border-gray-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all outline-none placeholder:text-gray-400';
 
 /**
  * @param {Object} props
@@ -122,8 +126,8 @@ export default function LeadForm({ state, result }) {
   // После успешной отправки показываем подтверждение вместо формы
   if (submitted) {
     return (
-      <section className="lead-form">
-        <p className="lead-form__success" role="status">
+      <section className="bg-white rounded-2xl p-6 shadow-lg border-2 border-blue-600">
+        <p className="text-gray-700" role="status">
           Спасибо! Заявка принята, мы свяжемся с вами в выбранное время.
         </p>
       </section>
@@ -131,63 +135,74 @@ export default function LeadForm({ state, result }) {
   }
 
   return (
-    <form className="lead-form" onSubmit={handleSubmit} noValidate>
-      <h2 className="lead-form__title">Оставить заявку</h2>
-      <p className="lead-form__subtitle">
-        Перезвоним за 5 минут и уточним детали
-      </p>
+    <form
+      className="bg-white rounded-2xl p-6 shadow-lg border-2 border-blue-600"
+      onSubmit={handleSubmit}
+      noValidate
+    >
+      <h2 className="text-xl font-bold text-gray-900">Оставить заявку</h2>
+      <p className="text-sm text-gray-500 mb-6">Перезвоним за 5 минут</p>
 
       {/* Имя — обязательное поле, с иконкой человека */}
-      <label className="lead-form__field">
-        Имя
-        <span className="lead-form__input-wrap">
-          <span className="lead-form__icon" aria-hidden="true">👤</span>
+      <label className="block mb-4">
+        <span className="block text-sm text-gray-500 mb-1">Имя</span>
+        <span className="relative block">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-base pointer-events-none" aria-hidden="true">👤</span>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Ваше имя"
             required
+            className={inputCls}
           />
         </span>
       </label>
 
       {/* Телефон — обязательный, маска через formatPhone (без сторонних библиотек), с иконкой телефона */}
-      <label className="lead-form__field">
-        Телефон
-        <span className="lead-form__input-wrap">
-          <span className="lead-form__icon" aria-hidden="true">📞</span>
+      <label className="block mb-4">
+        <span className="block text-sm text-gray-500 mb-1">Телефон</span>
+        <span className="relative block">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-base pointer-events-none" aria-hidden="true">📞</span>
           <input
             type="tel"
             value={phone}
             onChange={(e) => setPhone(formatPhone(e.target.value))}
             placeholder="+7 (___) ___-__-__"
             required
+            className={inputCls}
           />
         </span>
       </label>
 
       {/* Способ связи — radio, по умолчанию MAX */}
-      <fieldset className="lead-form__group">
-        <legend>Способ связи</legend>
-        {CHANNELS.map((ch) => (
-          <label key={ch} className="lead-form__radio">
-            <input
-              type="radio"
-              name="channel"
-              value={ch}
-              checked={channel === ch}
-              onChange={() => setChannel(ch)}
-            />
-            {ch}
-          </label>
-        ))}
+      <fieldset className="mb-4">
+        <legend className="block text-sm text-gray-500 mb-1">Способ связи</legend>
+        <div className="flex flex-wrap gap-x-4 gap-y-2">
+          {CHANNELS.map((ch) => (
+            <label key={ch} className="flex items-center gap-2 cursor-pointer text-gray-700">
+              <input
+                type="radio"
+                name="channel"
+                value={ch}
+                checked={channel === ch}
+                onChange={() => setChannel(ch)}
+                className="w-5 h-5 accent-blue-600"
+              />
+              {ch}
+            </label>
+          ))}
+        </div>
       </fieldset>
 
       {/* Удобное время для звонка — select */}
-      <label className="lead-form__field">
-        Удобное время для звонка
-        <select value={time} onChange={(e) => setTime(e.target.value)}>
+      <label className="block mb-6">
+        <span className="block text-sm text-gray-500 mb-1">Удобное время для звонка</span>
+        <select
+          value={time}
+          onChange={(e) => setTime(e.target.value)}
+          className={inputCls}
+        >
           {CALL_TIMES.map((t) => (
             <option key={t} value={t}>
               {t}
@@ -198,16 +213,16 @@ export default function LeadForm({ state, result }) {
 
       {/* Кнопка неактивна без имени/телефона и на время отправки */}
       <button
-        className="lead-form__submit"
         type="submit"
         disabled={!isValid || sending}
+        className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base rounded-xl transition-all shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-blue-600/20"
       >
         {sending ? 'Отправляем...' : 'Оставить заявку'}
       </button>
 
       {/* Сообщение об ошибке отправки (в проде) */}
       {error && (
-        <p className="lead-form__error" role="alert">
+        <p className="mt-3 text-sm text-red-600" role="alert">
           {error}
         </p>
       )}
