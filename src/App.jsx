@@ -58,10 +58,10 @@ export default function App() {
       </header>
 
       <main className="container">
-        <h2 className="page-title">
+        <h1 className="page-title">
           Калькулятор стоимости уборки
-        </h2>
-        <p className="page-subtitle">Рассчитайте цену за 30 секунд</p>
+        </h1>
+        <p className="subtitle mb-page">Рассчитайте цену за 30 секунд</p>
 
         <div className="grid">
           {/* Левая колонка — форма параметров */}

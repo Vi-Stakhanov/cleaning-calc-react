@@ -8,7 +8,7 @@
 import { TARIFFS, EXTRAS } from '../config/pricing.js';
 
 const cardCls = 'card';
-const cardTitleCls = 'card-title';
+const cardTitleCls = 'section-title';
 const inputCls = 'input input-plain';
 
 export default function CalcForm({ state, onChange }) {
@@ -56,7 +56,7 @@ export default function CalcForm({ state, onChange }) {
         <legend className={cardTitleCls}>Параметры помещения</legend>
         <div>
           <label className="param-field">
-            <span className="param-label">Площадь, м²</span>
+            <span className="label">Площадь, м²</span>
             <input
               type="number"
               min="1"
@@ -67,7 +67,7 @@ export default function CalcForm({ state, onChange }) {
           </label>
 
           <label className="param-field">
-            <span className="param-label">Комнаты</span>
+            <span className="label">Комнаты</span>
             <input
               type="number"
               min="0"
@@ -78,7 +78,7 @@ export default function CalcForm({ state, onChange }) {
           </label>
 
           <label className="param-field">
-            <span className="param-label">Санузлы</span>
+            <span className="label">Санузлы</span>
             <input
               type="number"
               min="0"

@@ -151,11 +151,11 @@ export default function LeadForm({ state, result }) {
   return (
     <form className="cta-block" onSubmit={handleSubmit} noValidate>
       <h2 className="cta-title">Оставить заявку</h2>
-      <p className="cta-subtitle">Перезвоним за 5 минут</p>
+      <p className="subtitle cta-subtitle-margin">Перезвоним за 5 минут</p>
 
       {/* Имя — обязательное поле, с иконкой человека */}
       <label className="form-group">
-        <span className="form-label">Имя</span>
+        <span className="label">Имя</span>
         <span className="input-wrapper">
           <span className="input-icon">
             <IconUser />
@@ -173,7 +173,7 @@ export default function LeadForm({ state, result }) {
 
       {/* Телефон — обязательный, маска через formatPhone (без сторонних библиотек), с иконкой телефона */}
       <label className="form-group">
-        <span className="form-label">Телефон</span>
+        <span className="label">Телефон</span>
         <span className="input-wrapper">
           <span className="input-icon">
             <IconPhone />
@@ -191,7 +191,7 @@ export default function LeadForm({ state, result }) {
 
       {/* Способ связи — radio, по умолчанию MAX */}
       <fieldset className="form-group">
-        <legend className="form-label">Способ связи</legend>
+        <legend className="label">Способ связи</legend>
         <div className="radio-group">
           {CHANNELS.map((ch) => (
             <label key={ch} className="radio-label">
@@ -211,7 +211,7 @@ export default function LeadForm({ state, result }) {
 
       {/* Удобное время для звонка — select */}
       <label className="form-group form-group-last">
-        <span className="form-label">Удобное время для звонка</span>
+        <span className="label">Удобное время для звонка</span>
         <select
           value={time}
           onChange={(e) => setTime(e.target.value)}
