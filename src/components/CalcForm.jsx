@@ -30,7 +30,7 @@ export default function CalcForm({ state, onChange }) {
     <form className="calc-form" onSubmit={(e) => e.preventDefault()}>
       {/* Тип уборки — radio-группа */}
       <fieldset className={cardCls}>
-        <legend className={cardTitleCls}>Тип уборки</legend>
+        <div className={cardTitleCls}>Тип уборки</div>
         <div className="radio-list">
           {Object.values(TARIFFS).map((t) => (
             <label
@@ -53,7 +53,7 @@ export default function CalcForm({ state, onChange }) {
 
       {/* Числовые параметры: площадь, комнаты, санузлы */}
       <fieldset className={cardCls}>
-        <legend className={cardTitleCls}>Параметры помещения</legend>
+        <div className={cardTitleCls}>Параметры помещения</div>
         <div>
           <label className="param-field">
             <span className="label">Площадь, м²</span>
@@ -92,7 +92,7 @@ export default function CalcForm({ state, onChange }) {
 
       {/* Доп. услуги — checkbox + количество (участвует в расчёте) */}
       <fieldset className={cardCls}>
-        <legend className={cardTitleCls}>Допуслуги</legend>
+        <div className={cardTitleCls}>Допуслуги</div>
         <div className="checkbox-list">
           {EXTRAS.map((extra) => {
             const qty = state.extras[extra.id] || 0;

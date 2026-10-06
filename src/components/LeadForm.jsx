@@ -191,7 +191,7 @@ export default function LeadForm({ state, result }) {
 
       {/* Способ связи — radio, по умолчанию MAX */}
       <fieldset className="form-group">
-        <legend className="label">Способ связи</legend>
+        <div className="label">Способ связи</div>
         <div className="radio-group">
           {CHANNELS.map((ch) => (
             <label key={ch} className="radio-label">
