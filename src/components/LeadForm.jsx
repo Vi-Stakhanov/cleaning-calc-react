@@ -6,7 +6,6 @@
  * имитируем успех с выводом объекта заявки в консоль.
  */
 import { useState } from 'react';
-import InputMask from 'react-input-mask'; // маска ввода телефона
 
 // Способы связи с клиентом (по умолчанию — MAX)
 const CHANNELS = ['MAX', 'Telegram', 'Позвонить'];
@@ -120,11 +119,10 @@ export default function LeadForm({ state, result }) {
         />
       </label>
 
-      {/* Телефон — обязательный, с маской +7 (999) 999-99-99 */}
+      {/* Телефон — обязательный, обычный input (без сторонней маски) */}
       <label className="lead-form__field">
         Телефон
-        <InputMask
-          mask="+7 (999) 999-99-99"
+        <input
           type="tel"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
