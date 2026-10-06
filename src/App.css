@@ -15,6 +15,9 @@
   --color-text-muted: #9ca3af;
   --color-border: #e5e7eb;
   --color-border-light: #f3f4f6;
+  --color-primary-light: rgba(37, 99, 235, 0.1);
+  --radius-md: 12px;
+  --transition-fast: 0.2s;
 }
 
 /* Сброс стилей legend */
@@ -515,21 +518,86 @@ body {
   margin-bottom: 0;
 }
 
-.extra-item .qty-input {
-  width: 70px;
-  height: 36px;
-  padding: 0 8px;
+/* Кастомный счётчик + / − (вместо браузерных стрелок number input) */
+.qty-counter {
+  display: flex;
+  align-items: center;
   border: 1px solid var(--color-border);
-  border-radius: 8px;
-  font-size: 14px;
-  text-align: center;
-  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  width: fit-content;
+  background: var(--color-surface);
 }
 
-.extra-item .qty-input:focus {
+.qty-counter button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.qty-counter button:hover {
+  background: var(--color-bg);
+  color: var(--color-primary);
+}
+
+.qty-counter button:active {
+  background: var(--color-primary-light);
+}
+
+.qty-counter button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.qty-counter button:disabled:hover {
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+}
+
+.qty-counter .qty-value {
+  width: 50px;
+  height: 40px;
+  border: none;
+  border-left: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-text);
+  background: var(--color-surface);
+  -moz-appearance: textfield;
+}
+
+.qty-counter .qty-value::-webkit-outer-spin-button,
+.qty-counter .qty-value::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.qty-counter .qty-value:focus {
   outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+  background: var(--color-primary-light);
+}
+
+/* Для параметров (площадь, комнаты, санузлы) — на всю ширину */
+.qty-counter.full-width {
+  width: 100%;
+}
+
+.qty-counter.full-width .qty-value {
+  flex: 1;
+  border-left: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
 }
 
 .form-group-last {

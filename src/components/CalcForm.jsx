@@ -6,10 +6,10 @@
  * UI: обычный CSS (src/App.css), три карточки.
  */
 import { TARIFFS, EXTRAS } from '../config/pricing.js';
+import QtyCounter from './QtyCounter.jsx';
 
 const cardCls = 'card';
 const cardTitleCls = 'card-title';
-const inputCls = 'input input-plain';
 
 export default function CalcForm({ state, onChange }) {
   // Универсальный обработчик: меняет одно поле состояния и зовёт onChange
@@ -57,34 +57,34 @@ export default function CalcForm({ state, onChange }) {
         <div>
           <label className="param-field">
             <span className="label">Площадь, м²</span>
-            <input
-              type="number"
-              min="1"
-              value={state.area}
-              onChange={(e) => setField('area', e.target.value)}
-              className={inputCls}
+            <QtyCounter
+              value={Number(state.area) || 1}
+              onChange={(v) => setField('area', String(v))}
+              min={1}
+              max={1000}
+              fullWidth
             />
           </label>
 
           <label className="param-field">
             <span className="label">Комнаты</span>
-            <input
-              type="number"
-              min="0"
-              value={state.rooms}
-              onChange={(e) => setField('rooms', e.target.value)}
-              className={inputCls}
+            <QtyCounter
+              value={Number(state.rooms) || 1}
+              onChange={(v) => setField('rooms', String(v))}
+              min={1}
+              max={20}
+              fullWidth
             />
           </label>
 
           <label className="param-field">
             <span className="label">Санузлы</span>
-            <input
-              type="number"
-              min="0"
-              value={state.bathrooms}
-              onChange={(e) => setField('bathrooms', e.target.value)}
-              className={inputCls}
+            <QtyCounter
+              value={Number(state.bathrooms) || 1}
+              onChange={(v) => setField('bathrooms', String(v))}
+              min={1}
+              max={10}
+              fullWidth
             />
           </label>
         </div>
@@ -108,13 +108,11 @@ export default function CalcForm({ state, onChange }) {
                   {extra.label} — {extra.price} ₽/{extra.unit}
                 </label>
                 {qty > 0 && (
-                  <input
-                    type="number"
-                    min="1"
+                  <QtyCounter
                     value={qty}
-                    onChange={(e) => setExtraQty(extra.id, e.target.value)}
-                    aria-label={`Количество: ${extra.label}`}
-                    className="qty-input"
+                    onChange={(v) => setExtraQty(extra.id, v)}
+                    min={1}
+                    max={99}
                   />
                 )}
               </div>
