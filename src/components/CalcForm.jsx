@@ -97,7 +97,7 @@ export default function CalcForm({ state, onChange }) {
           {EXTRAS.map((extra) => {
             const qty = state.extras[extra.id] || 0;
             return (
-              <div key={extra.id} className="extra-row">
+              <div key={extra.id} className="extra-item">
                 <label className="checkbox-label">
                   <input
                     type="checkbox"
