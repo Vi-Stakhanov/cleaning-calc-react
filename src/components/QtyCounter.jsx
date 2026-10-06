@@ -3,7 +3,7 @@
  * Переиспользуемый кастомный счётчик «− / значение / +» вместо
  * браузерных стрелок у <input type="number">.
  */
-export default function QtyCounter({ value, onChange, min = 1, max = 999, fullWidth = false }) {
+export default function QtyCounter({ value, onChange, min = 1, max = 999, fullWidth = false, id }) {
   return (
     <div className={`qty-counter ${fullWidth ? 'full-width' : ''}`}>
       <button
@@ -16,6 +16,7 @@ export default function QtyCounter({ value, onChange, min = 1, max = 999, fullWi
       </button>
       <input
         type="number"
+        id={id}
         className="qty-value"
         value={value}
         onChange={(e) => {

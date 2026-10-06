@@ -54,39 +54,42 @@ export default function CalcForm({ state, onChange }) {
       {/* Числовые параметры: площадь, комнаты, санузлы */}
       <fieldset className={cardCls}>
         <div className={cardTitleCls}>Параметры помещения</div>
-        <div>
-          <label className="param-field">
-            <span className="label">Площадь, м²</span>
+        <div className="params-grid">
+          <div className="param-field">
+            <label className="label" htmlFor="param-area">Площадь, м²</label>
             <QtyCounter
+              id="param-area"
               value={Number(state.area) || 1}
               onChange={(v) => setField('area', String(v))}
               min={1}
               max={1000}
               fullWidth
             />
-          </label>
+          </div>
 
-          <label className="param-field">
-            <span className="label">Комнаты</span>
+          <div className="param-field">
+            <label className="label" htmlFor="param-rooms">Комнаты</label>
             <QtyCounter
+              id="param-rooms"
               value={Number(state.rooms) || 1}
               onChange={(v) => setField('rooms', String(v))}
               min={1}
               max={20}
               fullWidth
             />
-          </label>
+          </div>
 
-          <label className="param-field">
-            <span className="label">Санузлы</span>
+          <div className="param-field">
+            <label className="label" htmlFor="param-bathrooms">Санузлы</label>
             <QtyCounter
+              id="param-bathrooms"
               value={Number(state.bathrooms) || 1}
               onChange={(v) => setField('bathrooms', String(v))}
               min={1}
               max={10}
               fullWidth
             />
-          </label>
+          </div>
         </div>
       </fieldset>
 
