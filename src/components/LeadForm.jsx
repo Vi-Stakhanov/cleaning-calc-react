@@ -209,7 +209,7 @@ export default function LeadForm({ state, result }) {
       </label>
 
       {/* Способ связи — radio, по умолчанию MAX */}
-      <fieldset className="form-group">
+      <div className="form-group">
         <div className="label">Способ связи</div>
         <div className="radio-group">
           {CHANNELS.map((ch) => (
@@ -226,7 +226,7 @@ export default function LeadForm({ state, result }) {
             </label>
           ))}
         </div>
-      </fieldset>
+      </div>
 
       {/* Удобное время для звонка — select */}
       <label className="form-group form-group-last">

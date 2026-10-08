@@ -29,7 +29,7 @@ export default function CalcForm({ state, onChange }) {
   return (
     <form className="calc-form" onSubmit={(e) => e.preventDefault()}>
       {/* Тип уборки — radio-группа */}
-      <fieldset className={cardCls}>
+      <div className={cardCls}>
         <div className={cardTitleCls}>Тип уборки</div>
         <div className="radio-list">
           {Object.values(TARIFFS).map((t) => (
@@ -49,10 +49,10 @@ export default function CalcForm({ state, onChange }) {
             </label>
           ))}
         </div>
-      </fieldset>
+      </div>
 
       {/* Числовые параметры: площадь, комнаты, санузлы */}
-      <fieldset className={cardCls}>
+      <div className={cardCls}>
         <div className={cardTitleCls}>Параметры помещения</div>
         <div className="params-grid">
           <div className="param-field">
@@ -91,10 +91,10 @@ export default function CalcForm({ state, onChange }) {
             />
           </div>
         </div>
-      </fieldset>
+      </div>
 
       {/* Доп. услуги — checkbox + количество (участвует в расчёте) */}
-      <fieldset className={cardCls}>
+      <div className={cardCls}>
         <div className={cardTitleCls}>Допуслуги</div>
         <div className="checkbox-list">
           {EXTRAS.map((extra) => {
@@ -122,7 +122,7 @@ export default function CalcForm({ state, onChange }) {
             );
           })}
         </div>
-      </fieldset>
+      </div>
     </form>
   );
 }
