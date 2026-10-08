@@ -5,9 +5,11 @@
  * результат в карточку цены. Layout: обычный CSS (src/App.css).
  */
 import { useMemo, useState } from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
 import CalcForm from './components/CalcForm.jsx';
 import PriceCard from './components/PriceCard.jsx';
 import LeadForm from './components/LeadForm.jsx';
+import Privacy from './pages/Privacy.jsx';
 import { calcPrice } from './calc.js';
 import './App.css';
 
@@ -36,7 +38,7 @@ export default function App() {
     [state],
   );
 
-  return (
+  const homePage = (
     <>
       {/* Хэдер — брендинг */}
       <header className="header">
@@ -93,10 +95,18 @@ export default function App() {
             </a>
           </div>
           <div className="footer-brand">
+            <Link to="/privacy" style={{ color: 'var(--color-text-muted)', fontSize: '14px', textDecoration: 'none', marginRight: '16px' }}>Политика конфиденциальности</Link>
             Сделано в <strong>calc-lead</strong>
           </div>
         </div>
       </footer>
     </>
+  );
+
+  return (
+    <Routes>
+      <Route path="/" element={homePage} />
+      <Route path="/privacy" element={<Privacy />} />
+    </Routes>
   );
 }

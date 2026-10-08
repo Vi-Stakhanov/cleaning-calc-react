@@ -7,6 +7,7 @@
  * UI: обычный CSS (src/App.css), акцентная карточка с синей обводкой.
  */
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { EXTRAS } from '../config/pricing.js';
 
 // Способы связи с клиентом (по умолчанию — MAX)
@@ -80,6 +81,7 @@ export default function LeadForm({ state, result }) {
   const [submitted, setSubmitted] = useState(false); // флаг успешной отправки
   const [sending, setSending] = useState(false);     // идёт ли отправка сейчас
   const [error, setError] = useState('');            // текст ошибки отправки
+  const [privacyAgreed, setPrivacyAgreed] = useState(false); // согласие на обработку ПД (152-ФЗ)
 
   // Валидация: без имени и полного телефона (11 цифр) кнопка неактивна
   const isValid = name.trim().length > 0 && phone.replace(/\D/g, '').length >= 11;
@@ -88,6 +90,12 @@ export default function LeadForm({ state, result }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isValid || sending) return;
+
+    // Проверка согласия на обработку персональных данных
+    if (!privacyAgreed) {
+      alert('Необходимо дать согласие на обработку персональных данных');
+      return;
+    }
 
     // Человекочитаемое название выбранного типа уборки
     const cleaningTypeLabel =
@@ -236,10 +244,26 @@ export default function LeadForm({ state, result }) {
         </select>
       </label>
 
-      {/* Кнопка неактивна без имени/телефона и на время отправки */}
+      {/* Согласие на обработку персональных данных (152-ФЗ) */}
+      <div className="form-group" style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+        <input
+          type="checkbox"
+          id="privacy"
+          checked={privacyAgreed}
+          onChange={(e) => setPrivacyAgreed(e.target.checked)}
+          style={{ marginTop: '3px', accentColor: 'var(--color-primary)', width: '18px', height: '18px' }}
+          required
+        />
+        <label htmlFor="privacy" style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.4' }}>
+          Я даю согласие на обработку персональных данных в соответствии с{' '}
+          <Link to="/privacy" style={{ color: 'var(--color-primary)', textDecoration: 'underline' }}>Политикой конфиденциальности</Link>
+        </label>
+      </div>
+
+      {/* Кнопка неактивна без имени/телефона, без согласия и на время отправки */}
       <button
         type="submit"
-        disabled={!isValid || sending}
+        disabled={!isValid || sending || !privacyAgreed}
         className="button"
       >
         {sending ? 'Отправляем...' : 'Оставить заявку'}
