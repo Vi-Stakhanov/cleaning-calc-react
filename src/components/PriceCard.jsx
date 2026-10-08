@@ -7,7 +7,7 @@
 import { formatRub } from '../calc.js';
 
 export default function PriceCard({ result }) {
-  const { base, bathroomsCost, extrasCost, total, min, max } = result;
+  const { base, bathroomsCost, extrasCost, total } = result;
 
   return (
     <aside className="price-block" aria-live="polite">
@@ -16,11 +16,7 @@ export default function PriceCard({ result }) {
       {/* Итоговая цена */}
       <p className="price-value">{formatRub(total)}</p>
 
-      {/* Ориентировочный диапазон: итог ±10% */}
-      <p className="price-range">
-        ≈ {formatRub(min)} – {formatRub(max)}
-      </p>
-
+      {/* Диапазон ±10% (min/max) больше не отображается — расчёт оставлен в result */}
       {/* Детализация: из чего сложилась цена */}
       <ul className="price-details">
         <li className="price-row">

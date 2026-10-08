@@ -190,13 +190,6 @@ body {
   font-weight: 700;
   color: var(--color-text);
   line-height: 1.2;
-  margin-bottom: 4px;
-}
-
-/* Диапазон цены */
-.price-range {
-  font-size: 14px;
-  color: var(--color-text-muted);
   margin-bottom: 16px;
 }
 
