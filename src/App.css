@@ -620,3 +620,22 @@ body {
   width: 20px;
   height: 20px;
 }
+
+.back-button {
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 0.2s;
+}
+
+.back-button:hover {
+  opacity: 0.7;
+}

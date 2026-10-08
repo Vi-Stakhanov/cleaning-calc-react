@@ -1,6 +1,17 @@
+import { useNavigate } from 'react-router-dom';
+
 export default function Privacy() {
+  const navigate = useNavigate();
+
   return (
     <div className="container" style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 24px' }}>
+      <button 
+        onClick={() => navigate('/')}
+        className="back-button"
+      >
+        ← назад
+      </button>
+
       <h1 className="card-title" style={{ fontSize: '28px', marginBottom: '24px' }}>Политика конфиденциальности</h1>
 
       <div style={{ fontSize: '15px', lineHeight: '1.7', color: 'var(--color-text-secondary)' }}>
