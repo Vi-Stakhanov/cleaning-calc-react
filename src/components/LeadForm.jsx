@@ -170,7 +170,7 @@ export default function LeadForm({ state, result }) {
   return (
     <form className="cta-block" onSubmit={handleSubmit} noValidate>
       <h2 className="card-title">Оставить заявку</h2>
-      <p className="subtitle cta-subtitle-margin">Перезвоним за 5 минут</p>
+      <p className="subtitle cta-subtitle-margin">Свяжемся в выбранное время</p>
 
       {/* Имя — обязательное поле, с иконкой человека */}
       <label className="form-group">
