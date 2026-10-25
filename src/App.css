@@ -63,7 +63,8 @@ body {
 .header-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 16px 16px;
+  /* Вертикальные отступы хедера увеличены для более просторного вида */
+  padding: 24px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
