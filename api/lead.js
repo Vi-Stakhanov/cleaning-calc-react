@@ -82,7 +82,6 @@ export default async function handler(req, res) {
 ${extrasText}
 
 Итого: ${totalPrice || 0} ₽
-Диапазон: ${priceRange || 'не указан'}
     `,
   };
 
@@ -96,7 +95,7 @@ ${extrasText}
 
     if (telegramToken && telegramChatId) {
       try {
-        const telegramMessage = `🔔 Новая заявка\n\nИмя: ${name}\nТелефон: ${phone}\nСвязь: ${channel || 'не указан'}\nВремя: ${time || 'не указано'}\n\nТип: ${cleaningType || 'не указан'}\nПлощадь: ${area || 0} м²\nКомнаты: ${rooms || 0}\nСанузлы: ${bathrooms || 0}\n\nДопуслуги:\n${extrasText}\n\nИтого: ${totalPrice || 0} ₽\nДиапазон: ${priceRange || 'не указан'}`;
+        const telegramMessage = `🔔 Новая заявка\n\nИмя: ${name}\nТелефон: ${phone}\nСвязь: ${channel || 'не указан'}\nВремя: ${time || 'не указано'}\n\nТип: ${cleaningType || 'не указан'}\nПлощадь: ${area || 0} м²\nКомнаты: ${rooms || 0}\nСанузлы: ${bathrooms || 0}\n\nДопуслуги:\n${extrasText}\n\nИтого: ${totalPrice || 0} ₽`;
 
         await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
           method: 'POST',
