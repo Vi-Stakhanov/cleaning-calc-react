@@ -7,11 +7,14 @@
  */
 import { TARIFFS, EXTRAS } from '../config/pricing.js';
 import QtyCounter from './QtyCounter.jsx';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const cardCls = 'card';
 const cardTitleCls = 'card-title';
 
 export default function CalcForm({ state, onChange }) {
+  const navigate = useNavigate();
+  const location = useLocation();
   // Универсальный обработчик: меняет одно поле состояния и зовёт onChange
   const setField = (field, value) => onChange({ ...state, [field]: value });
 
@@ -28,6 +31,15 @@ export default function CalcForm({ state, onChange }) {
 
   return (
     <form className="calc-form" onSubmit={(e) => e.preventDefault()}>
+      {/* Кнопка возврата на страницу презентации — только на главной (/),
+          на /demo/cleaning калькулятор встроен в страницу и кнопка не нужна */}
+      {location.pathname !== '/demo/cleaning' && (
+        <div className="back-link">
+          <button type="button" className="link-button" onClick={() => navigate('/demo/cleaning')}>
+            ← Вернуться к предложению
+          </button>
+        </div>
+      )}
       {/* Тип уборки — radio-группа */}
       <div className={cardCls}>
         <div className={cardTitleCls}>Тип уборки</div>

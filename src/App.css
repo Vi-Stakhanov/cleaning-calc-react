@@ -744,3 +744,124 @@ body {
   }
 }
 
+
+/* === Страница презентации /demo/cleaning (BusinessOffer) === */
+.offer-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.offer-page h1 {
+  font-size: 2rem;
+  margin-bottom: 24px;
+  line-height: 1.3;
+}
+
+.offer-page h2 {
+  font-size: 1.5rem;
+  margin: 40px 0 16px;
+}
+
+.offer-page .lead {
+  font-size: 1.125rem;
+  color: var(--color-text-muted, #666);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 32px 0;
+}
+
+.benefit {
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.benefit h3 {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+  color: var(--color-primary, #0d47a1);
+}
+
+.touchpoints {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 32px 0;
+}
+
+.touchpoint {
+  padding: 20px;
+  background: #f5f7fa;
+  border-radius: 8px;
+}
+
+.touchpoint h3 {
+  margin: 0 0 8px;
+  font-size: 1.125rem;
+  color: var(--color-primary, #0d47a1);
+}
+
+.contact-block {
+  margin: 40px 0;
+  padding: 32px;
+  background: var(--color-primary, #0d47a1);
+  color: white;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.contact-block h2 {
+  color: white;
+  margin: 0 0 16px;
+}
+
+.contact-block a {
+  color: white;
+  text-decoration: underline;
+}
+
+.contact-block .small {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-top: 16px;
+}
+
+.demo-heading {
+  text-align: center;
+  margin: 48px 0 24px;
+}
+
+.button.large {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  margin: 32px auto;
+  padding: 16px 32px;
+  font-size: 18px;
+}
+
+/* Кнопка возврата к презентации из калькулятора */
+.back-link {
+  margin-bottom: 16px;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--color-primary, #0d47a1);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 8px 0;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+}
