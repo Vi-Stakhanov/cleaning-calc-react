@@ -45,7 +45,10 @@ export default function CalcForm({ state, onChange }) {
                 onChange={() => setField('type', t.id)}
                 className="choice-input"
               />
-              {t.label} ({t.pricePerM2} ₽/м²)
+              <span className="tariff-text">
+                <span className="tariff-name">{t.label}</span>
+                <span className="tariff-price">{t.pricePerM2} ₽/м²</span>
+              </span>
             </label>
           ))}
         </div>
@@ -108,7 +111,10 @@ export default function CalcForm({ state, onChange }) {
                     onChange={(e) => toggleExtra(extra.id, e.target.checked)}
                     className="choice-input"
                   />
-                  {extra.label} — {extra.price} ₽/{extra.unit}
+                  <span className="extra-text">
+                    <span className="extra-name">{extra.label}</span>
+                    <span className="extra-price">{extra.price} ₽/{extra.unit}</span>
+                  </span>
                 </label>
                 {qty > 0 && (
                   <QtyCounter
