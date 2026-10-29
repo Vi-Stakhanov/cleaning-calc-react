@@ -143,11 +143,7 @@ body {
   align-items: start;
 }
 
-@media (min-width: 1024px) {
-  .grid {
-    grid-template-columns: 1fr 380px;
-  }
-}
+
 
 /* Правая колонка — sticky под хэдером */
 .sidebar {
@@ -156,12 +152,7 @@ body {
   gap: 24px;
 }
 
-@media (min-width: 1024px) {
-  .sidebar {
-    /* position: sticky; */
-    /* top: 96px; */
-  }
-}
+
 
 /* Карточки калькулятора */
 .card {
@@ -264,7 +255,7 @@ body {
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--color-text-muted);
+  color: var(--color-primary);
   width: 20px;
   height: 20px;
   pointer-events: none;
@@ -490,7 +481,7 @@ body {
 .extra-text {
   display: flex;
   flex-wrap: wrap;
-  gap: 3px;
+  gap: 8px;
   line-height: 1.3;
 }
 
@@ -524,14 +515,6 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
-
-@media (max-width: 768px) {
-  .params-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-
 
 .param-input {
   width: 100%;
@@ -687,3 +670,29 @@ body {
 .back-button:hover {
   opacity: 0.7;
 }
+
+@media (max-width: 1199px) {
+  
+}
+
+@media (max-width: 768px) {
+  .params-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr 380px;
+  }
+
+  .sidebar {
+    /* position: sticky; */
+    /* top: 96px; */
+  }
+}
+
