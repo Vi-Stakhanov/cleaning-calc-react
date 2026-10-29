@@ -48,7 +48,7 @@ export default function App() {
             <div className="header-logo-icon">
               <span>К</span>
             </div>
-            <div>
+            <div className='header-right'>
               <h1 className="header-title">КлинингПро</h1>
               <p className="header-subtitle">Профессиональная уборка</p>
             </div>
@@ -98,7 +98,7 @@ export default function App() {
           </div>
           <div className="footer-brand">
             <Link to="/privacy">Политика конфиденциальности</Link>
-            Сделано в <strong>calclead</strong>
+            <span>Сделано в <strong>calclead</strong></span>
           </div>
         </div>
       </footer>

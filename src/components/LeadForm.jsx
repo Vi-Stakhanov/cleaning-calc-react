@@ -247,7 +247,7 @@ export default function LeadForm({ state, result }) {
           id="privacy"
           checked={privacyAgreed}
           onChange={(e) => setPrivacyAgreed(e.target.checked)}
-          style={{ marginTop: '3px', accentColor: 'var(--color-primary)', width: '18px', height: '18px' }}
+          style={{ marginTop: '1px', accentColor: 'var(--color-primary)', width: '17px', height: '17px' }}
           required
         />
         <label htmlFor="privacy" style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.4' }}>
