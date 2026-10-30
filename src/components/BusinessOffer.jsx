@@ -31,7 +31,7 @@ export default function BusinessOffer() {
         </div>
         <div className="benefit">
           <h3>📲 Работает везде</h3>
-          <p>2ГИС, Яндекс.Карты, VK, Telegram. Клиент переходит в один клик и сразу считает.</p>
+          <p>2ГИС, Яндекс.Карты, VK, Telegram, ваш сайт. Клиент переходит в один клик и сразу считает.</p>
         </div>
       </div>
 
