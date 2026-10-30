@@ -10,6 +10,7 @@ import CalcForm from './components/CalcForm.jsx';
 import PriceCard from './components/PriceCard.jsx';
 import LeadForm from './components/LeadForm.jsx';
 import BusinessOffer from './components/BusinessOffer.jsx';
+import ScrollToTop from './components/ScrollToTop.jsx';
 import Privacy from './pages/Privacy.jsx';
 import { calcPrice } from './calc.js';
 import './App.css';
@@ -107,10 +108,13 @@ export default function App() {
   );
 
   return (
-    <Routes>
-      <Route path="/" element={homePage} />
-      <Route path="/demo/cleaning" element={<BusinessOffer />} />
-      <Route path="/privacy" element={<Privacy />} />
-    </Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={homePage} />
+        <Route path="/demo/cleaning" element={<BusinessOffer />} />
+        <Route path="/privacy" element={<Privacy />} />
+      </Routes>
+    </>
   );
 }
