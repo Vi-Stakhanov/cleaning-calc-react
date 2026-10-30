@@ -112,7 +112,7 @@ export default function App() {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={homePage} />
-        <Route path="/demo/cleaning" element={<BusinessOffer />} />
+        <Route path="/offer" element={<BusinessOffer />} />
         <Route path="/privacy" element={<Privacy />} />
       </Routes>
     </>

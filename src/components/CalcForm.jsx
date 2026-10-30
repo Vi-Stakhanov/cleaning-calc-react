@@ -32,8 +32,8 @@ export default function CalcForm({ state, onChange }) {
   return (
     <form className="calc-form" onSubmit={(e) => e.preventDefault()}>
       {/* Кнопка возврата к калькулятору — только на странице презентации
-          (/demo/cleaning); на главной (/) она не показывается */}
-      {location.pathname === '/demo/cleaning' && (
+          (/offer); на главной (/) она не показывается */}
+      {location.pathname === '/offer' && (
         <div className="back-link">
           <button type="button" className="link-button" onClick={() => navigate('/')}>
             ← Вернуться к калькулятору
