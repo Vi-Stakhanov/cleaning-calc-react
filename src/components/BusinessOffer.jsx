@@ -1,26 +1,13 @@
 /**
  * src/components/BusinessOffer.jsx
  * Страница-презентация для B2B-клиентов (владельцев клининговых компаний).
- * Маршрут: /demo/cleaning. Внизу встраивается живой демо-калькулятор.
+ * Маршрут: /demo/cleaning. Калькулятор встроен только на главной (/),
+ * здесь — кнопка-ссылка на него.
  */
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CalcForm from './CalcForm.jsx';
-
-// Начальное состояние формы — то же, что в App.jsx (строка ~18)
-const initialState = {
-  type: 'regular', // ключ из TARIFFS
-  area: 50,        // площадь, м²
-  rooms: 2,        // комнаты
-  bathrooms: 1,    // санузлы
-  extras: {},      // { idДопУслуги: количество }
-};
 
 export default function BusinessOffer() {
   const navigate = useNavigate();
-  // Локальное состояние для демо-калькулятора: CalcForm — контролируемый
-  // компонент и требует props state/onChange (см. App.jsx: <CalcForm state={state} onChange={setState} />)
-  const [calcState, setCalcState] = useState(initialState);
 
   return (
     <div className="offer-page">
@@ -84,9 +71,6 @@ export default function BusinessOffer() {
         <p>Телефон: +7 (999) 888-82-22</p>
         <p className="small">Готовое решение. Подключение за 1 день.</p>
       </div>
-
-      <h2 className="demo-heading">Попробуйте калькулятор прямо сейчас</h2>
-      <CalcForm state={calcState} onChange={setCalcState} />
     </div>
   );
 }
