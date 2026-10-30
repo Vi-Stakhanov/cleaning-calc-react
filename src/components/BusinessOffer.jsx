@@ -1,8 +1,4 @@
-import { useNavigate } from 'react-router-dom';
-
 export default function BusinessOffer() {
-  const navigate = useNavigate();
-
   return (
     <div className="offer-page">
       {/* Заголовок */}
@@ -78,9 +74,9 @@ export default function BusinessOffer() {
       </div>
 
       {/* Демо */}
-      <button className="button primary large" onClick={() => navigate('/')}>
+      <a href="/" target="_blank" rel="noopener" className="button primary large">
         Посмотреть, как это работает →
-      </button>
+      </a>
 
       {/* Контакты */}
       <div className="contact-block">
