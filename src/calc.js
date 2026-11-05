@@ -1,10 +1,3 @@
-/**
-src/calc.js
-Чистая (без React) логика расчёта стоимости.
-Поддерживает мульти-клиентность:
-- cleaning: площадь × тариф + санузлы + допы
-- carwash: пакет × коэффициент типа транспорта + допы
-*/
 import {
   TARIFFS,
   EXTRAS,
@@ -13,29 +6,16 @@ import {
   PRICE_RANGE,
 } from './config/pricing.js';
 
-/**
-Рассчитывает стоимость по параметрам формы.
-@param {Object} params
-@param {string} params.type          — ключ тарифа или пакета
-@param {string} [params.vehicleType] — ключ типа транспорта (carwash)
-@param {number} params.area          — площадь, м² (cleaning)
-@param {number} params.bathrooms     — количество санузлов (cleaning)
-@param {Object<string, number>} params.extras — выбранные доп. услуги
-@param {Object} [params.client]      — конфиг клиента
-@returns {{ base:number, bathroomsCost:number, extrasCost:number, total:number, min:number, max:number }}
-*/
 export function calcPrice({ type, vehicleType, area, bathrooms, extras, client }) {
   const isCarwash = client?.id === 'carwash';
 
-  // 1. База
   let base = 0;
+  let bathroomsCost = 0;
+
   if (isCarwash) {
-    // Автомойка: пакет × коэффициент типа транспорта
-    const pkg = client.packages?.find((p) => p.id === type);
-    const vehicle = client.vehicleTypes?.find((v) => v.id === vehicleType);
-    const price = pkg?.price ?? 0;
-    const coeff = vehicle?.coefficient ?? 1;
-    base = Math.round(price * coeff);
+    // Автомойка: берём цену пакета из выбранного типа транспорта
+    const vehicle = client?.vehicleTypes?.find((v) => v.id === vehicleType);
+    base = vehicle?.prices?.[type] ?? 0;
   } else {
     // Клининг: площадь × тариф
     const tariffs = client
@@ -44,14 +24,14 @@ export function calcPrice({ type, vehicleType, area, bathrooms, extras, client }
     const tariff = tariffs[type]?.pricePerM2 ?? 0;
     const safeArea = Math.max(0, Number(area) || 0);
     base = safeArea * tariff;
+
+    // Санузлы (только клининг)
+    const safeBathrooms = Math.max(0, Math.floor(Number(bathrooms) || 0));
+    const paidBathrooms = Math.max(0, safeBathrooms - FREE_BATHROOMS);
+    bathroomsCost = paidBathrooms * EXTRA_BATHROOM_PRICE;
   }
 
-  // 2. Санузлы (только клининг)
-  const safeBathrooms = Math.max(0, Math.floor(Number(bathrooms) || 0));
-  const paidBathrooms = Math.max(0, safeBathrooms - FREE_BATHROOMS);
-  const bathroomsCost = isCarwash ? 0 : paidBathrooms * EXTRA_BATHROOM_PRICE;
-
-  // 3. Допуслуги
+  // Допуслуги (общие для обоих)
   const extrasList = client?.extras ?? EXTRAS;
   let extrasCost = 0;
   for (const extra of extrasList) {
@@ -59,7 +39,6 @@ export function calcPrice({ type, vehicleType, area, bathrooms, extras, client }
     extrasCost += qty * extra.price;
   }
 
-  // 4. Итог
   const total = base + bathroomsCost + extrasCost;
   return {
     base,
@@ -71,7 +50,6 @@ export function calcPrice({ type, vehicleType, area, bathrooms, extras, client }
   };
 }
 
-/** Форматирует число как цену в рублях без копеек: 12 345 ₽ */
 export function formatRub(value) {
   return `${Math.round(value).toLocaleString('ru-RU')} ₽`;
 }

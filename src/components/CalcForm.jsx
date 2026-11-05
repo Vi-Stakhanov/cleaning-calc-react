@@ -21,6 +21,13 @@ export default function CalcForm({ state, onChange, client }) {
 
   const isCarwash = client.id === 'carwash';
 
+  // Для автомойки: получаем цены пакетов из выбранного типа транспорта
+  const getPackagePrice = (packageId) => {
+    if (!isCarwash) return 0;
+    const vehicle = client.vehicleTypes?.find((v) => v.id === state.vehicleType);
+    return vehicle?.prices?.[packageId] ?? 0;
+  };
+
   return (
     <form className="calc-form" onSubmit={(e) => e.preventDefault()}>
       {location.pathname === '/offer' && (
@@ -31,32 +38,11 @@ export default function CalcForm({ state, onChange, client }) {
         </div>
       )}
 
-      <div className={cardCls}>
-        <div className={cardTitleCls}>{isCarwash ? 'Пакет услуг' : 'Тип уборки'}</div>
-        <div className="radio-list">
-          {(isCarwash ? client.packages : client.tariffs).map((t) => (
-            <label key={t.id} className="radio-label">
-              <input
-                type="radio"
-                name="type"
-                value={t.id}
-                checked={state.type === t.id}
-                onChange={() => setField('type', t.id)}
-                className="choice-input"
-              />
-              <span className="tariff-text">
-                <span className="tariff-name">{t.name}</span>
-                <span className="tariff-price">{t.price} {t.unit || '₽'}</span>
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
+      {/* Для автомойки — сначала тип транспорта, для клининга — тип уборки */}
       {isCarwash ? (
         <div className={cardCls}>
           <div className={cardTitleCls}>Тип транспорта</div>
-          <div className="radio-list">
+          <div className="radio-list-horizontal">
             {client.vehicleTypes.map((v) => (
               <label key={v.id} className="radio-label">
                 <input
@@ -69,6 +55,53 @@ export default function CalcForm({ state, onChange, client }) {
                 />
                 <span className="tariff-text">
                   <span className="tariff-name">{v.name}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className={cardCls}>
+          <div className={cardTitleCls}>Тип уборки</div>
+          <div className="radio-list">
+            {client.tariffs.map((t) => (
+              <label key={t.id} className="radio-label">
+                <input
+                  type="radio"
+                  name="type"
+                  value={t.id}
+                  checked={state.type === t.id}
+                  onChange={() => setField('type', t.id)}
+                  className="choice-input"
+                />
+                <span className="tariff-text">
+                  <span className="tariff-name">{t.name}</span>
+                  <span className="tariff-price">{t.price} {t.unit}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Для автомойки — пакет услуг с ценами из vehicleType, для клининга — параметры помещения */}
+      {isCarwash ? (
+        <div className={cardCls}>
+          <div className={cardTitleCls}>Пакет услуг</div>
+          <div className="radio-list-horizontal">
+            {client.packages.map((p) => (
+              <label key={p.id} className="radio-label">
+                <input
+                  type="radio"
+                  name="type"
+                  value={p.id}
+                  checked={state.type === p.id}
+                  onChange={() => setField('type', p.id)}
+                  className="choice-input"
+                />
+                <span className="tariff-text">
+                  <span className="tariff-name">{p.name}</span>
+                  <span className="tariff-price">{getPackagePrice(p.id)} ₽</span>
                 </span>
               </label>
             ))}
@@ -115,13 +148,14 @@ export default function CalcForm({ state, onChange, client }) {
         </div>
       )}
 
+      {/* Доп. услуги */}
       <div className={cardCls}>
         <div className={cardTitleCls}>{isCarwash ? 'Дополнительные опции' : 'Допуслуги'}</div>
         <div className="checkbox-list">
           {client.extras.map((extra) => {
             const qty = state.extras[extra.id] || 0;
             return (
-              <div key={extra.id} className="extra-item">
+              <div key={extra.id} className={`extra-item ${isCarwash ? 'extra-item-compact' : ''}`}>
                 <label className="checkbox-label">
                   <input
                     type="checkbox"
@@ -134,7 +168,7 @@ export default function CalcForm({ state, onChange, client }) {
                     <span className="extra-price">{extra.price} {extra.unit || '₽'}</span>
                   </span>
                 </label>
-                {qty > 0 && (
+                {qty > 0 && !isCarwash && (
                   <QtyCounter
                     value={qty}
                     onChange={(v) => setExtraQty(extra.id, v)}

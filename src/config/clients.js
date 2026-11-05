@@ -35,18 +35,18 @@ export const clients = {
     phone: '+7 (999) 888-82-22',
     telegram: '@vitalya_stakhanov',
     packages: [
-      { id: 'body', name: 'Кузов', price: 500 },
-      { id: 'complex', name: 'Комплекс', price: 900 }
+      { id: 'body', name: 'Кузов' },
+      { id: 'complex', name: 'Комплекс' }
     ],
     vehicleTypes: [
-      { id: 'sedan', name: 'Седан', coefficient: 1.0 },
-      { id: 'crossover', name: 'Кроссовер', coefficient: 1.2 },
-      { id: 'suv', name: 'Внедорожник', coefficient: 1.4 },
-      { id: 'minibus', name: 'Микроавтобус', coefficient: 1.6 },
-      { id: 'bus', name: 'Автобус', coefficient: 2.5 },
-      { id: 'truck10', name: 'Грузовой 10т', coefficient: 3.0 },
-      { id: 'truck', name: 'Фура', coefficient: 3.2 },
-      { id: 'special', name: 'Спецтехника', coefficient: 3.5 }
+      { id: 'sedan', name: 'Седан', prices: { body: 500, complex: 900 } },
+      { id: 'crossover', name: 'Кроссовер', prices: { body: 600, complex: 1100 } },
+      { id: 'suv', name: 'Внедорожник', prices: { body: 700, complex: 1200 } },
+      { id: 'minibus', name: 'Микроавтобус', prices: { body: 800, complex: 1400 } },
+      { id: 'bus', name: 'Автобус', prices: { body: 1250, complex: 2250 } },
+      { id: 'truck10', name: 'Грузовой 10т', prices: { body: 1500, complex: 2700 } },
+      { id: 'truck', name: 'Фура', prices: { body: 1600, complex: 2900 } },
+      { id: 'special', name: 'Спецтехника', prices: { body: 1750, complex: 3150 } }
     ],
     extras: [
       { id: 'rubber', name: 'Чернение резины', price: 400 },

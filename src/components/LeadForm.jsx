@@ -1,9 +1,3 @@
-/**
-src/components/LeadForm.jsx
-Форма заявки. Собирает контакты клиента и актуальные данные расчёта
-и отправляет их на сервер (api/lead.js). В режиме разработки — имитация.
-Мульти-клиентность: cleaning и carwash.
-*/
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -31,7 +25,7 @@ const IconUser = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="21" height="24" viewBox="0 0 448 512"><path fill="currentColor" d="M224 256a128 128 0 1 0 0-256a128 128 0 1 0 0 256m-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512h388.6c16.4 0 29.7-13.3 29.7-29.7c0-98.5-79.8-178.3-178.3-178.3z"/></svg>
 );
 const IconPhone = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512"><path fill="currentColor" d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64c0 247.4 200.6 448 448 448c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-4 6.3 11.6L304.7 368c-70.4-33.3-127.4-90.3-160.7-160.7l49.3-40.3c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512"><path fill="currentColor" d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64c0 247.4 200.6 448 448 448c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368c-70.4-33.3-127.4-90.3-160.7-160.7l49.3-40.3c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg>
 );
 
 export default function LeadForm({ state, result, client }) {
@@ -45,15 +39,12 @@ export default function LeadForm({ state, result, client }) {
   const [privacyAgreed, setPrivacyAgreed] = useState(false);
 
   const isValid = name.trim().length > 0 && phone.replace(/\D/g, '').length >= 11;
-
   const isCarwash = client?.id === 'carwash';
 
-  // Универсальное получение названия пакета/тарифа
   const serviceLabel = isCarwash
     ? (client?.packages?.find((p) => p.id === state.type)?.name ?? state.type)
     : (client?.tariffs?.find((t) => t.id === state.type)?.name ?? state.type);
 
-  // Название типа транспорта для автомойки
   const vehicleLabel = isCarwash
     ? (client?.vehicleTypes?.find((v) => v.id === state.vehicleType)?.name ?? state.vehicleType)
     : null;

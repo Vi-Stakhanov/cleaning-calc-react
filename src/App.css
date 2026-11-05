@@ -449,7 +449,7 @@ body {
 .checkbox-list{
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
 .extra-item {
@@ -462,6 +462,11 @@ body {
   font-size: 14px;
   color: var(--color-text);
 }
+
+.extra-item-compact {
+    min-height: auto;
+    
+  }
 
 .extra-item .checkbox-label {
   display: flex;
@@ -502,6 +507,12 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.radio-list-horizontal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
 }
 
 /* Поля параметров (площадь, комнаты, санузлы) */
@@ -722,6 +733,8 @@ body {
     align-items: flex-start;
     row-gap: 10px;
   }
+
+  
 
   .extra-item .qty-counter{
     margin-left: auto;
