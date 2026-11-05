@@ -12,20 +12,32 @@ import {
 } from './config/pricing.js';
 
 /**
- * Рассчитывает стоимость уборки по параметрам формы.
+ * Рассчитывает стоимость по параметрам формы.
+ * Мульти-клиентность: если передан client (конфиг из src/config/clients.js),
+ * тарифы и доп. услуги берутся из него; иначе — из legacy pricing.js (клининг).
  *
  * @param {Object} params
- * @param {string} params.type          — ключ типа уборки из TARIFFS
+ * @param {string} params.type          — ключ тарифа (type)
  * @param {number} params.area          — площадь, м²
  * @param {number} params.bathrooms     — количество санузлов
  * @param {Object<string, number>} params.extras — выбранные доп. услуги:
  *        { id_доп_услуги: количество } (например { windows: 3, ironing: 2 })
+ * @param {Object} [params.client]      — конфиг клиента (tariffs/extras)
  * @returns {{ base:number, bathroomsCost:number, extrasCost:number,
  *             total:number, min:number, max:number }}
  */
-export function calcPrice({ type, area, bathrooms, extras }) {
+export function calcPrice({ type, area, bathrooms, extras, client }) {
+  // Тарифы: из конфига клиента (массив) или из legacy TARIFFS (объект)
+  const tariffs = client
+    ? Object.fromEntries(
+        client.tariffs.map((t) => [t.id, { pricePerM2: t.price }]),
+      )
+    : TARIFFS;
+  // Допуслуги: из конфига клиента или legacy EXTRAS
+  const extrasList = client ? client.extras : EXTRAS;
+
   // 1. База = площадь × тариф выбранного типа (если тип неизвестен — 0)
-  const tariff = TARIFFS[type]?.pricePerM2 ?? 0;
+  const tariff = tariffs[type]?.pricePerM2 ?? 0;
   const safeArea = Math.max(0, Number(area) || 0);
   const base = safeArea * tariff;
 
@@ -36,7 +48,7 @@ export function calcPrice({ type, area, bathrooms, extras }) {
 
   // 3. Допуслуги: цена за единицу × количество
   let extrasCost = 0;
-  for (const extra of EXTRAS) {
+  for (const extra of extrasList) {
     const qty = Math.max(0, Number(extras?.[extra.id]) || 0);
     extrasCost += qty * extra.price;
   }

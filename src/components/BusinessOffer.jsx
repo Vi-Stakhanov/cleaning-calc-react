@@ -1,18 +1,19 @@
+import { useParams } from 'react-router-dom';
+import { getClient } from '../config/clients.js';
+
 export default function BusinessOffer() {
+  const { clientId } = useParams();
+  const client = getClient(clientId || 'cleaning');
+
   return (
     <div className="offer-page">
       {/* Заголовок */}
-      <h1>Калькулятор стоимости уборки для вашей компании</h1>
-      <p className="lead">
-        Клиент считает цену сам за 30 секунд. Вы получаете готовую заявку с суммой.
-      </p>
+      <h1>{client.offer.title}</h1>
+      <p className="lead">{client.offer.lead}</p>
 
       {/* Боль — двусторонняя */}
       <h2>Почему обычные формы не работают</h2>
-      <p className="lead">
-        Клиент не хочет звонить и ждать расчёта. Он хочет узнать цену сразу.
-        Вы не хотите ловить каждого клиента на звонке. Вы хотите готовые заявки.
-      </p>
+      <p className="lead">{client.offer.pain}</p>
 
       {/* Решение */}
       <h2>Как решает калькулятор</h2>
@@ -74,15 +75,15 @@ export default function BusinessOffer() {
       </div>
 
       {/* Демо */}
-      <a href="/" target="_blank" rel="noopener" className="button primary large">
+      <a href={`/${client.id}`} target="_blank" rel="noopener" className="button primary large">
         Посмотреть, как это работает →
       </a>
 
       {/* Контакты */}
       <div className="contact-block">
         <h2>Хотите подключить?</h2>
-        <p>Telegram: <a href="https://t.me/vitalya_stakhanov" target="_blank" rel="noopener">@vitalya_stakhanov</a></p>
-        <p>Телефон: +7 (999) 888-82-22</p>
+        <p>Telegram: <a href={`https://t.me/${client.telegram.replace('@', '')}`} target="_blank" rel="noopener">{client.telegram}</a></p>
+        <p>Телефон: {client.phone}</p>
         <p className="contact-note">Подключение за 1 день.</p>
       </div>
     </div>

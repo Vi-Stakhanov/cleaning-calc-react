@@ -1,18 +1,18 @@
 /**
  * src/components/CalcForm.jsx
- * Форма параметров уборки: тип (radio), площадь/комнаты/санузлы (number),
- * доп. услуги (checkbox + количество). Никакого расчёта здесь нет —
- * компонент только собирает значения и отдаёт их наверх через onChange.
- * UI: обычный CSS (src/App.css), три карточки.
+ * Форма параметров: тип (radio), площадь/комнаты/санузлы (number),
+ * доп. услуги (checkbox + количество). Тарифы и доп. услуги берутся из
+ * конфига клиента (проп client) — мульти-клиентность (клининг, автомойка).
+ * Никакого расчёта здесь нет — компонент только собирает значения и отдаёт
+ * их наверх через onChange. UI: обычный CSS (src/App.css), три карточки.
  */
-import { TARIFFS, EXTRAS } from '../config/pricing.js';
 import QtyCounter from './QtyCounter.jsx';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const cardCls = 'card';
 const cardTitleCls = 'card-title';
 
-export default function CalcForm({ state, onChange }) {
+export default function CalcForm({ state, onChange, client }) {
   const navigate = useNavigate();
   const location = useLocation();
   // Универсальный обработчик: меняет одно поле состояния и зовёт onChange
@@ -40,11 +40,11 @@ export default function CalcForm({ state, onChange }) {
           </button>
         </div>
       )}
-      {/* Тип уборки — radio-группа */}
+      {/* Тип услуги — radio-группа (тарифы из конфига клиента) */}
       <div className={cardCls}>
         <div className={cardTitleCls}>Тип уборки</div>
         <div className="radio-list">
-          {Object.values(TARIFFS).map((t) => (
+          {client.tariffs.map((t) => (
             <label
               key={t.id}
               className="radio-label"
@@ -58,8 +58,8 @@ export default function CalcForm({ state, onChange }) {
                 className="choice-input"
               />
               <span className="tariff-text">
-                <span className="tariff-name">{t.label}</span>
-                <span className="tariff-price">{t.pricePerM2} ₽/м²</span>
+                <span className="tariff-name">{t.name}</span>
+                <span className="tariff-price">{t.price} {t.unit}</span>
               </span>
             </label>
           ))}
@@ -108,11 +108,11 @@ export default function CalcForm({ state, onChange }) {
         </div>
       </div>
 
-      {/* Доп. услуги — checkbox + количество (участвует в расчёте) */}
+      {/* Доп. услуги — checkbox + количество (из конфига клиента) */}
       <div className={cardCls}>
         <div className={cardTitleCls}>Допуслуги</div>
         <div className="checkbox-list">
-          {EXTRAS.map((extra) => {
+          {client.extras.map((extra) => {
             const qty = state.extras[extra.id] || 0;
             return (
               <div key={extra.id} className="extra-item">
@@ -124,8 +124,8 @@ export default function CalcForm({ state, onChange }) {
                     className="choice-input"
                   />
                   <span className="extra-text">
-                    <span className="extra-name">{extra.label}</span>
-                    <span className="extra-price">{extra.price} ₽/{extra.unit}</span>
+                    <span className="extra-name">{extra.name}</span>
+                    <span className="extra-price">{extra.price} {extra.unit}</span>
                   </span>
                 </label>
                 {qty > 0 && (

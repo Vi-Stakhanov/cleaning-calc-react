@@ -8,7 +8,7 @@
  */
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { EXTRAS } from '../config/pricing.js';
+import { EXTRAS as LEGACY_EXTRAS } from '../config/pricing.js';
 
 // Способы связи с клиентом (по умолчанию — MAX)
 const CHANNELS = ['MAX', 'Telegram', 'Позвонить'];
@@ -69,7 +69,7 @@ const IconPhone = () => (
  * @param {Object} props.result — актуальный результат calcPrice()
  *        (total, min, max и т.д.)
  */
-export default function LeadForm({ state, result }) {
+export default function LeadForm({ state, result, client }) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [channel, setChannel] = useState('MAX'); // способ связи по умолчанию
@@ -93,8 +93,10 @@ export default function LeadForm({ state, result }) {
       return;
     }
 
-    // Человекочитаемое название выбранного типа уборки
+    // Человекочитаемое название выбранного тарифа (из конфига клиента)
+    const extrasList = client?.extras ?? LEGACY_EXTRAS;
     const cleaningTypeLabel =
+      client?.tariffs.find((t) => t.id === state.type)?.name ??
       { regular: 'Поддерживающая', general: 'Генеральная',
         postRenovation: 'После ремонта', office: 'Офис' }[state.type] ?? state.type;
 
@@ -110,13 +112,12 @@ export default function LeadForm({ state, result }) {
       rooms: Number(state.rooms),                // комнаты
       bathrooms: Number(state.bathrooms),        // санузлы
       // Массив выбранных доп. услуг в читаемом виде для бэкенда (Telegram/почта):
-      // [{ id, label, qty, price }] — раньше передавался объект { id: qty },
-      // из-за чего в заявке всегда было «Допуслуги: нет».
-      extras: EXTRAS
+      // [{ id, label, qty, price }] — из конфига клиента (мульти-клиентность).
+      extras: extrasList
         .filter((ex) => Math.max(0, Number(state.extras?.[ex.id]) || 0) > 0)
         .map((ex) => ({
           id: ex.id,
-          label: ex.label,
+          label: ex.name ?? ex.label,
           qty: Math.max(0, Number(state.extras[ex.id]) || 0),
           price: ex.price,
         })),

@@ -1,11 +1,11 @@
 /**
  * src/App.jsx
- * Корневой компонент калькулятора: хранит состояние формы,
- * мгновенно пересчитывает цену (через calcPrice) и передаёт
- * результат в карточку цены. Layout: обычный CSS (src/App.css).
+ * Корневой компонент мульти-клиентского калькулятора: клиент выбирается по
+ * URL (/ → cleaning, /carwash → carwash), состояние формы и расчёт живут здесь.
+ * Layout: обычный CSS (src/App.css).
  */
-import { useMemo, useState } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { Routes, Route, Link, useParams } from 'react-router-dom';
 import CalcForm from './components/CalcForm.jsx';
 import PriceCard from './components/PriceCard.jsx';
 import LeadForm from './components/LeadForm.jsx';
@@ -13,6 +13,7 @@ import BusinessOffer from './components/BusinessOffer.jsx';
 import ScrollToTop from './components/ScrollToTop.jsx';
 import Privacy from './pages/Privacy.jsx';
 import { calcPrice } from './calc.js';
+import { getClient } from './config/clients.js';
 import './App.css';
 
 // Начальное состояние формы: тип по умолчанию, пустые доп. услуги
@@ -24,8 +25,16 @@ const initialState = {
   extras: {},      // { idДопУслуги: количество }
 };
 
-export default function App() {
+// Внутренний компонент домашней страницы: знает clientId из URL
+function HomePage() {
+  const { clientId } = useParams();
+  const client = getClient(clientId || 'cleaning');
+
+  // При смене клиента сбрасываем состояние формы на дефолтное
   const [state, setState] = useState(initialState);
+  useEffect(() => {
+    setState({ ...initialState, type: client.tariffs[0]?.id ?? 'regular' });
+  }, [client.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Расчёт выполняется при каждом рендере, то есть мгновенно
   // после любого изменения ввода; useMemo избегает лишних пересчётов.
@@ -36,46 +45,47 @@ export default function App() {
         area: Number(state.area),
         bathrooms: Number(state.bathrooms),
         extras: state.extras,
+        client,
       }),
-    [state],
+    [state, client],
   );
 
-  const homePage = (
+  return (
     <>
-      {/* Хэдер — брендинг */}
+      {/* Хэдер — брендинг клиента */}
       <header className="header">
         <div className="header-inner">
           <div className="header-logo">
             {/* Логотип или название компании клиента */}
             <div className="header-logo-icon">
-              <span>К</span>
+              <span>{client.name.charAt(0)}</span>
             </div>
             <div className='header-right'>
-              <h1 className="header-title">КлинингПро</h1>
-              <p className="header-subtitle">Профессиональная уборка</p>
+              <h1 className="header-title">{client.name}</h1>
+              <p className="header-subtitle">{client.subtitle}</p>
             </div>
           </div>
-          <a href="tel:+79998888222" className="header-phone">
-            +7 (999) 888-82-22
+          <a href={`tel:${client.phone.replace(/[^+\d]/g, '')}`} className="header-phone">
+            {client.phone}
           </a>
         </div>
       </header>
 
       <main className="container">
         <h1 className="page-title">
-          Калькулятор стоимости уборки
+          Калькулятор стоимости {client.id === 'carwash' ? 'мойки' : 'уборки'}
         </h1>
         <p className="subtitle mb-page">Рассчитайте цену за 30 секунд</p>
 
         <div className="grid">
           {/* Левая колонка — форма параметров */}
-          <CalcForm state={state} onChange={setState} />
+          <CalcForm state={state} onChange={setState} client={client} />
 
           {/* Правая колонка — sticky: карточка результата + форма заявки */}
           <div className="sidebar">
             <PriceCard result={result} />
             {/* Заявка получает актуальные параметры и результат расчёта */}
-            <LeadForm state={state} result={result} />
+            <LeadForm state={state} result={result} client={client} />
           </div>
         </div>
       </main>
@@ -106,13 +116,17 @@ export default function App() {
       </footer>
     </>
   );
+}
 
+export default function App() {
   return (
     <>
       <ScrollToTop />
       <Routes>
-        <Route path="/" element={homePage} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/:clientId" element={<HomePage />} />
         <Route path="/offer" element={<BusinessOffer />} />
+        <Route path="/:clientId/offer" element={<BusinessOffer />} />
         <Route path="/privacy" element={<Privacy />} />
       </Routes>
     </>
