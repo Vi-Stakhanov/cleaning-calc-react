@@ -348,6 +348,10 @@ body {
 }
 
 /* Кнопка */
+.button.primary {
+  text-decoration: none;
+}
+
 .button {
   width: 100%;
   height: 56px;
