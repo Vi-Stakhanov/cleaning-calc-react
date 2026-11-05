@@ -1,9 +1,9 @@
 /**
- * src/App.jsx
- * Корневой компонент мульти-клиентского калькулятора: клиент выбирается по
- * URL (/ → cleaning, /carwash → carwash), состояние формы и расчёт живут здесь.
- * Layout: обычный CSS (src/App.css).
- */
+src/App.jsx
+Корневой компонент мульти-клиентского калькулятора: клиент выбирается по
+URL (/ → cleaning, /carwash → carwash), состояние формы и расчёт живут здесь.
+Layout: обычный CSS (src/App.css).
+*/
 import { useEffect, useMemo, useState } from 'react';
 import { Routes, Route, Link, useParams } from 'react-router-dom';
 import CalcForm from './components/CalcForm.jsx';
@@ -18,7 +18,8 @@ import './App.css';
 
 // Начальное состояние формы: тип по умолчанию, пустые доп. услуги
 const initialState = {
-  type: 'regular', // ключ из TARIFFS
+  type: 'regular', // ключ из TARIFFS или packages
+  vehicleType: 'sedan', // для автомойки
   area: 50,        // площадь, м²
   rooms: 2,        // комнаты (пока informational, на цену не влияет)
   bathrooms: 1,    // санузлы (со второго — платные)
@@ -32,8 +33,12 @@ function HomePage() {
 
   // При смене клиента сбрасываем состояние формы на дефолтное
   const [state, setState] = useState(initialState);
+
   useEffect(() => {
-    setState({ ...initialState, type: client.tariffs[0]?.id ?? 'regular' });
+    const defaultType = client.id === 'carwash'
+      ? (client.packages[0]?.id ?? 'body')
+      : (client.tariffs[0]?.id ?? 'regular');
+    setState({ ...initialState, type: defaultType, vehicleType: 'sedan' });
   }, [client.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Расчёт выполняется при каждом рендере, то есть мгновенно
@@ -42,6 +47,7 @@ function HomePage() {
     () =>
       calcPrice({
         type: state.type,
+        vehicleType: state.vehicleType,
         area: Number(state.area),
         bathrooms: Number(state.bathrooms),
         extras: state.extras,
@@ -76,11 +82,9 @@ function HomePage() {
           Калькулятор стоимости {client.id === 'carwash' ? 'мойки' : 'уборки'}
         </h1>
         <p className="subtitle mb-page">Рассчитайте цену за 30 секунд</p>
-
         <div className="grid">
           {/* Левая колонка — форма параметров */}
           <CalcForm state={state} onChange={setState} client={client} />
-
           {/* Правая колонка — sticky: карточка результата + форма заявки */}
           <div className="sidebar">
             <PriceCard result={result} />

@@ -1,8 +1,10 @@
 /**
- * src/calc.js
- * Чистая (без React) логика расчёта стоимости уборки.
- * Вынесена отдельно, чтобы её можно было тестировать независимо от UI.
- */
+src/calc.js
+Чистая (без React) логика расчёта стоимости.
+Поддерживает мульти-клиентность:
+- cleaning: площадь × тариф + санузлы + допы
+- carwash: пакет × коэффициент типа транспорта + допы
+*/
 import {
   TARIFFS,
   EXTRAS,
@@ -12,48 +14,52 @@ import {
 } from './config/pricing.js';
 
 /**
- * Рассчитывает стоимость по параметрам формы.
- * Мульти-клиентность: если передан client (конфиг из src/config/clients.js),
- * тарифы и доп. услуги берутся из него; иначе — из legacy pricing.js (клининг).
- *
- * @param {Object} params
- * @param {string} params.type          — ключ тарифа (type)
- * @param {number} params.area          — площадь, м²
- * @param {number} params.bathrooms     — количество санузлов
- * @param {Object<string, number>} params.extras — выбранные доп. услуги:
- *        { id_доп_услуги: количество } (например { windows: 3, ironing: 2 })
- * @param {Object} [params.client]      — конфиг клиента (tariffs/extras)
- * @returns {{ base:number, bathroomsCost:number, extrasCost:number,
- *             total:number, min:number, max:number }}
- */
-export function calcPrice({ type, area, bathrooms, extras, client }) {
-  // Тарифы: из конфига клиента (массив) или из legacy TARIFFS (объект)
-  const tariffs = client
-    ? Object.fromEntries(
-        client.tariffs.map((t) => [t.id, { pricePerM2: t.price }]),
-      )
-    : TARIFFS;
-  // Допуслуги: из конфига клиента или legacy EXTRAS
-  const extrasList = client ? client.extras : EXTRAS;
+Рассчитывает стоимость по параметрам формы.
+@param {Object} params
+@param {string} params.type          — ключ тарифа или пакета
+@param {string} [params.vehicleType] — ключ типа транспорта (carwash)
+@param {number} params.area          — площадь, м² (cleaning)
+@param {number} params.bathrooms     — количество санузлов (cleaning)
+@param {Object<string, number>} params.extras — выбранные доп. услуги
+@param {Object} [params.client]      — конфиг клиента
+@returns {{ base:number, bathroomsCost:number, extrasCost:number, total:number, min:number, max:number }}
+*/
+export function calcPrice({ type, vehicleType, area, bathrooms, extras, client }) {
+  const isCarwash = client?.id === 'carwash';
 
-  // 1. База = площадь × тариф выбранного типа (если тип неизвестен — 0)
-  const tariff = tariffs[type]?.pricePerM2 ?? 0;
-  const safeArea = Math.max(0, Number(area) || 0);
-  const base = safeArea * tariff;
+  // 1. База
+  let base = 0;
+  if (isCarwash) {
+    // Автомойка: пакет × коэффициент типа транспорта
+    const pkg = client.packages?.find((p) => p.id === type);
+    const vehicle = client.vehicleTypes?.find((v) => v.id === vehicleType);
+    const price = pkg?.price ?? 0;
+    const coeff = vehicle?.coefficient ?? 1;
+    base = Math.round(price * coeff);
+  } else {
+    // Клининг: площадь × тариф
+    const tariffs = client
+      ? Object.fromEntries(client.tariffs.map((t) => [t.id, { pricePerM2: t.price }]))
+      : TARIFFS;
+    const tariff = tariffs[type]?.pricePerM2 ?? 0;
+    const safeArea = Math.max(0, Number(area) || 0);
+    base = safeArea * tariff;
+  }
 
-  // 2. Санузлы: первый бесплатный, за каждый со второго +300 ₽
+  // 2. Санузлы (только клининг)
   const safeBathrooms = Math.max(0, Math.floor(Number(bathrooms) || 0));
   const paidBathrooms = Math.max(0, safeBathrooms - FREE_BATHROOMS);
-  const bathroomsCost = paidBathrooms * EXTRA_BATHROOM_PRICE;
+  const bathroomsCost = isCarwash ? 0 : paidBathrooms * EXTRA_BATHROOM_PRICE;
 
-  // 3. Допуслуги: цена за единицу × количество
+  // 3. Допуслуги
+  const extrasList = client?.extras ?? EXTRAS;
   let extrasCost = 0;
   for (const extra of extrasList) {
     const qty = Math.max(0, Number(extras?.[extra.id]) || 0);
     extrasCost += qty * extra.price;
   }
 
-  // 4. Итог = база + санузлы + допы; диапазон = итог ±10%
+  // 4. Итог
   const total = base + bathroomsCost + extrasCost;
   return {
     base,

@@ -1,11 +1,3 @@
-/**
- * src/components/CalcForm.jsx
- * Форма параметров: тип (radio), площадь/комнаты/санузлы (number),
- * доп. услуги (checkbox + количество). Тарифы и доп. услуги берутся из
- * конфига клиента (проп client) — мульти-клиентность (клининг, автомойка).
- * Никакого расчёта здесь нет — компонент только собирает значения и отдаёт
- * их наверх через onChange. UI: обычный CSS (src/App.css), три карточки.
- */
 import QtyCounter from './QtyCounter.jsx';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -15,24 +7,22 @@ const cardTitleCls = 'card-title';
 export default function CalcForm({ state, onChange, client }) {
   const navigate = useNavigate();
   const location = useLocation();
-  // Универсальный обработчик: меняет одно поле состояния и зовёт onChange
+
   const setField = (field, value) => onChange({ ...state, [field]: value });
 
-  // Переключение checkbox доп. услуги: 0 — выключена, 1 — включена
   const toggleExtra = (id, checked) =>
     setField('extras', {
       ...state.extras,
       [id]: checked ? Math.max(1, state.extras[id] || 1) : 0,
     });
 
-  // Изменение количества выбранной доп. услуги
   const setExtraQty = (id, qty) =>
     setField('extras', { ...state.extras, [id]: Math.max(0, Number(qty) || 0) });
 
+  const isCarwash = client.id === 'carwash';
+
   return (
     <form className="calc-form" onSubmit={(e) => e.preventDefault()}>
-      {/* Кнопка возврата к калькулятору — только на странице презентации
-          (/offer); на главной (/) она не показывается */}
       {location.pathname === '/offer' && (
         <div className="back-link">
           <button type="button" className="link-button" onClick={() => navigate('/')}>
@@ -40,15 +30,12 @@ export default function CalcForm({ state, onChange, client }) {
           </button>
         </div>
       )}
-      {/* Тип услуги — radio-группа (тарифы из конфига клиента) */}
+
       <div className={cardCls}>
-        <div className={cardTitleCls}>Тип уборки</div>
+        <div className={cardTitleCls}>{isCarwash ? 'Пакет услуг' : 'Тип уборки'}</div>
         <div className="radio-list">
-          {client.tariffs.map((t) => (
-            <label
-              key={t.id}
-              className="radio-label"
-            >
+          {(isCarwash ? client.packages : client.tariffs).map((t) => (
+            <label key={t.id} className="radio-label">
               <input
                 type="radio"
                 name="type"
@@ -59,58 +46,77 @@ export default function CalcForm({ state, onChange, client }) {
               />
               <span className="tariff-text">
                 <span className="tariff-name">{t.name}</span>
-                <span className="tariff-price">{t.price} {t.unit}</span>
+                <span className="tariff-price">{t.price} {t.unit || '₽'}</span>
               </span>
             </label>
           ))}
         </div>
       </div>
 
-      {/* Числовые параметры: площадь, комнаты, санузлы */}
-      <div className={cardCls}>
-        <div className={cardTitleCls}>Параметры помещения</div>
-        <div className="params-grid">
-          <div className="param-field">
-            <label className="label" htmlFor="param-area">Площадь, м²</label>
-            <QtyCounter
-              id="param-area"
-              value={Number(state.area) || 1}
-              onChange={(v) => setField('area', String(v))}
-              min={1}
-              max={1000}
-              fullWidth
-            />
-          </div>
-
-          <div className="param-field">
-            <label className="label" htmlFor="param-rooms">Комнаты</label>
-            <QtyCounter
-              id="param-rooms"
-              value={Number(state.rooms) || 1}
-              onChange={(v) => setField('rooms', String(v))}
-              min={1}
-              max={20}
-              fullWidth
-            />
-          </div>
-
-          <div className="param-field">
-            <label className="label" htmlFor="param-bathrooms">Санузлы</label>
-            <QtyCounter
-              id="param-bathrooms"
-              value={Number(state.bathrooms) || 1}
-              onChange={(v) => setField('bathrooms', String(v))}
-              min={1}
-              max={10}
-              fullWidth
-            />
+      {isCarwash ? (
+        <div className={cardCls}>
+          <div className={cardTitleCls}>Тип транспорта</div>
+          <div className="radio-list">
+            {client.vehicleTypes.map((v) => (
+              <label key={v.id} className="radio-label">
+                <input
+                  type="radio"
+                  name="vehicleType"
+                  value={v.id}
+                  checked={state.vehicleType === v.id}
+                  onChange={() => setField('vehicleType', v.id)}
+                  className="choice-input"
+                />
+                <span className="tariff-text">
+                  <span className="tariff-name">{v.name}</span>
+                </span>
+              </label>
+            ))}
           </div>
         </div>
-      </div>
+      ) : (
+        <div className={cardCls}>
+          <div className={cardTitleCls}>Параметры помещения</div>
+          <div className="params-grid">
+            <div className="param-field">
+              <label className="label" htmlFor="param-area">Площадь, м²</label>
+              <QtyCounter
+                id="param-area"
+                value={Number(state.area) || 1}
+                onChange={(v) => setField('area', String(v))}
+                min={1}
+                max={1000}
+                fullWidth
+              />
+            </div>
+            <div className="param-field">
+              <label className="label" htmlFor="param-rooms">Комнаты</label>
+              <QtyCounter
+                id="param-rooms"
+                value={Number(state.rooms) || 1}
+                onChange={(v) => setField('rooms', String(v))}
+                min={1}
+                max={20}
+                fullWidth
+              />
+            </div>
+            <div className="param-field">
+              <label className="label" htmlFor="param-bathrooms">Санузлы</label>
+              <QtyCounter
+                id="param-bathrooms"
+                value={Number(state.bathrooms) || 1}
+                onChange={(v) => setField('bathrooms', String(v))}
+                min={1}
+                max={10}
+                fullWidth
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
-      {/* Доп. услуги — checkbox + количество (из конфига клиента) */}
       <div className={cardCls}>
-        <div className={cardTitleCls}>Допуслуги</div>
+        <div className={cardTitleCls}>{isCarwash ? 'Дополнительные опции' : 'Допуслуги'}</div>
         <div className="checkbox-list">
           {client.extras.map((extra) => {
             const qty = state.extras[extra.id] || 0;
@@ -125,7 +131,7 @@ export default function CalcForm({ state, onChange, client }) {
                   />
                   <span className="extra-text">
                     <span className="extra-name">{extra.name}</span>
-                    <span className="extra-price">{extra.price} {extra.unit}</span>
+                    <span className="extra-price">{extra.price} {extra.unit || '₽'}</span>
                   </span>
                 </label>
                 {qty > 0 && (

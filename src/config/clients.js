@@ -1,12 +1,3 @@
-/**
- * src/config/clients.js
- * Конфиг-система мульти-клиентности: в одном приложении несколько
- * бизнесов (клининг, автомойка). Клиент выбирается по сегменту URL:
- *   /            → cleaning (по умолчанию)
- *   /carwash     → carwash
- *   /carwash/offer → презентация для автомойки
- */
-
 export const clients = {
   cleaning: {
     id: 'cleaning',
@@ -43,19 +34,27 @@ export const clients = {
     subtitle: 'Профессиональная автомойка',
     phone: '+7 (999) 888-82-22',
     telegram: '@vitalya_stakhanov',
-    tariffs: [
-      { id: 'exterior', name: 'Кузов', price: 500, unit: '₽' },
-      { id: 'complex', name: 'Комплекс', price: 900, unit: '₽' },
-      { id: 'detailing', name: 'Детейлинг', price: 3000, unit: '₽' },
-      { id: 'truck', name: 'Внедорожник', price: 1200, unit: '₽' }
+    packages: [
+      { id: 'body', name: 'Кузов', price: 500 },
+      { id: 'complex', name: 'Комплекс', price: 900 }
+    ],
+    vehicleTypes: [
+      { id: 'sedan', name: 'Седан', coefficient: 1.0 },
+      { id: 'crossover', name: 'Кроссовер', coefficient: 1.2 },
+      { id: 'suv', name: 'Внедорожник', coefficient: 1.4 },
+      { id: 'minibus', name: 'Микроавтобус', coefficient: 1.6 },
+      { id: 'bus', name: 'Автобус', coefficient: 2.5 },
+      { id: 'truck10', name: 'Грузовой 10т', coefficient: 3.0 },
+      { id: 'truck', name: 'Фура', coefficient: 3.2 },
+      { id: 'special', name: 'Спецтехника', coefficient: 3.5 }
     ],
     extras: [
-      { id: 'wheels', name: 'Диски', price: 200, unit: '₽' },
-      { id: 'engine', name: 'Мойка двигателя', price: 1500, unit: '₽' },
-      { id: 'interior', name: 'Химчистка салона', price: 2500, unit: '₽' },
-      { id: 'polish', name: 'Полировка', price: 4000, unit: '₽' },
-      { id: 'ceramic', name: 'Керамика', price: 8000, unit: '₽' },
-      { id: 'glass', name: 'Покрытие стёкол', price: 600, unit: '₽' }
+      { id: 'rubber', name: 'Чернение резины', price: 400 },
+      { id: 'bitumen', name: 'Удаление битумных пятен', price: 1500 },
+      { id: 'wax', name: 'Воск кузова', price: 600 },
+      { id: 'cleaning', name: 'Удаление и чистка (налет/реагенты)', price: 2000 },
+      { id: 'sanitary', name: 'Санитарная обработка кузова/салона', price: 1200 },
+      { id: 'bio', name: 'Сложные био-загрязнения (органика/волосы)', price: 5000 }
     ],
     offer: {
       title: 'Калькулятор стоимости мойки для вашей компании',
