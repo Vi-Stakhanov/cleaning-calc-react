@@ -1,3 +1,7 @@
+/**
+src/components/LeadForm.jsx
+Форма заявки. Мульти-клиентность: cleaning и carwash.
+*/
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -41,12 +45,19 @@ export default function LeadForm({ state, result, client }) {
   const isValid = name.trim().length > 0 && phone.replace(/\D/g, '').length >= 11;
   const isCarwash = client?.id === 'carwash';
 
+  // Универсальное получение названия пакета/тарифа
   const serviceLabel = isCarwash
     ? (client?.packages?.find((p) => p.id === state.type)?.name ?? state.type)
     : (client?.tariffs?.find((t) => t.id === state.type)?.name ?? state.type);
 
+  // Название типа транспорта для автомойки
   const vehicleLabel = isCarwash
     ? (client?.vehicleTypes?.find((v) => v.id === state.vehicleType)?.name ?? state.vehicleType)
+    : null;
+
+  // Цена пакета с учётом типа транспорта
+  const packagePrice = isCarwash
+    ? (client?.vehicleTypes?.find((v) => v.id === state.vehicleType)?.prices?.[state.type] ?? 0)
     : null;
 
   const handleSubmit = async (e) => {
@@ -58,15 +69,21 @@ export default function LeadForm({ state, result, client }) {
     }
 
     const extrasList = client?.extras ?? [];
+    
+    // Формируем заявку в зависимости от типа клиента
     const lead = {
       name: name.trim(),
       phone: phone.replace(/\D/g, ''),
       channel,
       time,
       totalPrice: result.total,
-      priceRange: [result.min, result.max],
       serviceType: serviceLabel,
-      ...(isCarwash ? { vehicleType: vehicleLabel } : {
+      ...(isCarwash ? {
+        // Для автомойки
+        vehicleType: vehicleLabel,
+        packagePrice: packagePrice,
+      } : {
+        // Для клининга
         area: Number(state.area),
         rooms: Number(state.rooms),
         bathrooms: Number(state.bathrooms),
