@@ -1,37 +1,19 @@
 /**
- * src/components/LeadForm.jsx
- * Форма заявки на уборку (CTA-блок). Собирает контакты клиента и актуальные
- * данные расчёта (через props из App.jsx) и отправляет их на сервер
- * (api/lead.js → письмо владельцу). В режиме разработки сеть не трогаем:
- * имитируем успех с выводом объекта заявки в консоль.
- * UI: обычный CSS (src/App.css), акцентная карточка с синей обводкой.
- */
+src/components/LeadForm.jsx
+Форма заявки. Собирает контакты клиента и актуальные данные расчёта
+и отправляет их на сервер (api/lead.js). В режиме разработки — имитация.
+Мульти-клиентность: cleaning и carwash.
+*/
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { EXTRAS as LEGACY_EXTRAS } from '../config/pricing.js';
 
-// Способы связи с клиентом (по умолчанию — MAX)
 const CHANNELS = ['MAX', 'Telegram', 'Позвонить'];
 
-// Форматирование телефона в маску +7 (___) ___-__-__ без сторонних библиотек
 function formatPhone(value) {
-  // Убираем всё кроме цифр
   let digits = value.replace(/\D/g, '');
-
-  // Если начинается с 8, меняем на 7
-  if (digits.startsWith('8')) {
-    digits = '7' + digits.slice(1);
-  }
-
-  // Если не начинается с 7, добавляем 7
-  if (digits.length > 0 && !digits.startsWith('7')) {
-    digits = '7' + digits;
-  }
-
-  // Ограничиваем 11 цифрами
+  if (digits.startsWith('8')) digits = '7' + digits.slice(1);
+  if (digits.length > 0 && !digits.startsWith('7')) digits = '7' + digits;
   digits = digits.slice(0, 11);
-
-  // Форматируем
   if (digits.length === 0) return '';
   if (digits.length === 1) return '+7';
   if (digits.length <= 4) return '+7 (' + digits.slice(1);
@@ -40,79 +22,64 @@ function formatPhone(value) {
   return '+7 (' + digits.slice(1, 4) + ') ' + digits.slice(4, 7) + '-' + digits.slice(7, 9) + '-' + digits.slice(9, 11);
 }
 
-// Удобное время для звонка (select)
-const CALL_TIMES = [
-  'Как можно скорее',
-  'До 12:00',
-  '12:00–18:00',
-  '18:00–21:00',
-  'Любое',
-];
+const CALL_TIMES = ['Как можно скорее', 'До 12:00', '12:00–18:00', '18:00–21:00', 'Любое'];
 
 const inputCls = 'input';
-
-// Select: pl-4 — нормальный отступ слева, pr-10 — место для стрелки справа
 const selectCls = 'select';
 
-// Минималистичные SVG-иконки для полей формы (stroke, 20px, серые)
 const IconUser = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="21" height="24" viewBox="0 0 448 512"><path fill="currentColor" d="M224 256a128 128 0 1 0 0-256a128 128 0 1 0 0 256m-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512h388.6c16.4 0 29.7-13.3 29.7-29.7c0-98.5-79.8-178.3-178.3-178.3z"/></svg>
 );
 const IconPhone = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512"><path fill="currentColor" d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64c0 247.4 200.6 448 448 448c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368c-70.4-33.3-127.4-90.3-160.7-160.7l49.3-40.3c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512"><path fill="currentColor" d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64c0 247.4 200.6 448 448 448c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-4 6.3 11.6L304.7 368c-70.4-33.3-127.4-90.3-160.7-160.7l49.3-40.3c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg>
 );
 
-/**
- * @param {Object} props
- * @param {Object} props.state  — текущие параметры формы калькулятора
- *        (type, area, rooms, bathrooms, extras)
- * @param {Object} props.result — актуальный результат calcPrice()
- *        (total, min, max и т.д.)
- */
 export default function LeadForm({ state, result, client }) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [channel, setChannel] = useState('MAX'); // способ связи по умолчанию
-  const [time, setTime] = useState(CALL_TIMES[0]); // время звонка по умолчанию
-  const [submitted, setSubmitted] = useState(false); // флаг успешной отправки
-  const [sending, setSending] = useState(false);     // идёт ли отправка сейчас
-  const [error, setError] = useState('');            // текст ошибки отправки
-  const [privacyAgreed, setPrivacyAgreed] = useState(false); // согласие на обработку ПД (152-ФЗ)
+  const [channel, setChannel] = useState('MAX');
+  const [time, setTime] = useState(CALL_TIMES[0]);
+  const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
+  const [privacyAgreed, setPrivacyAgreed] = useState(false);
 
-  // Валидация: без имени и полного телефона (11 цифр) кнопка неактивна
   const isValid = name.trim().length > 0 && phone.replace(/\D/g, '').length >= 11;
 
-  // Отправка формы: собираем объект заявки и отправляем на сервер
+  const isCarwash = client?.id === 'carwash';
+
+  // Универсальное получение названия пакета/тарифа
+  const serviceLabel = isCarwash
+    ? (client?.packages?.find((p) => p.id === state.type)?.name ?? state.type)
+    : (client?.tariffs?.find((t) => t.id === state.type)?.name ?? state.type);
+
+  // Название типа транспорта для автомойки
+  const vehicleLabel = isCarwash
+    ? (client?.vehicleTypes?.find((v) => v.id === state.vehicleType)?.name ?? state.vehicleType)
+    : null;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isValid || sending) return;
-
-    // Проверка согласия на обработку персональных данных
     if (!privacyAgreed) {
       alert('Необходимо дать согласие на обработку персональных данных');
       return;
     }
 
-    // Человекочитаемое название выбранного тарифа (из конфига клиента)
-    const extrasList = client?.extras ?? LEGACY_EXTRAS;
-    const cleaningTypeLabel =
-      client?.tariffs.find((t) => t.id === state.type)?.name ??
-      { regular: 'Поддерживающая', general: 'Генеральная',
-        postRenovation: 'После ремонта', office: 'Офис' }[state.type] ?? state.type;
-
+    const extrasList = client?.extras ?? [];
     const lead = {
       name: name.trim(),
-      phone: phone.replace(/\D/g, ''), // на сервер — чистые цифры: 79161234567
-      channel,                                   // MAX / Telegram / Позвонить
-      time,                                      // удобное время для звонка
-      totalPrice: result.total,                  // итоговая цена, ₽
-      priceRange: [result.min, result.max],      // диапазон цены ±10%
-      cleaningType: cleaningTypeLabel,           // тип уборки
-      area: Number(state.area),                  // площадь, м²
-      rooms: Number(state.rooms),                // комнаты
-      bathrooms: Number(state.bathrooms),        // санузлы
-      // Массив выбранных доп. услуг в читаемом виде для бэкенда (Telegram/почта):
-      // [{ id, label, qty, price }] — из конфига клиента (мульти-клиентность).
+      phone: phone.replace(/\D/g, ''),
+      channel,
+      time,
+      totalPrice: result.total,
+      priceRange: [result.min, result.max],
+      serviceType: serviceLabel,
+      ...(isCarwash ? { vehicleType: vehicleLabel } : {
+        area: Number(state.area),
+        rooms: Number(state.rooms),
+        bathrooms: Number(state.bathrooms),
+      }),
       extras: extrasList
         .filter((ex) => Math.max(0, Number(state.extras?.[ex.id]) || 0) > 0)
         .map((ex) => ({
@@ -123,14 +90,12 @@ export default function LeadForm({ state, result, client }) {
         })),
     };
 
-    // Режим разработки: сеть не дёргаем — имитируем успешную отправку
     if (import.meta.env.DEV) {
       console.log('Заявка (dev-заглушка):', lead);
       setSubmitted(true);
       return;
     }
 
-    // Продакшен: POST на серверную функцию Vercel
     setSending(true);
     setError('');
     try {
@@ -141,19 +106,17 @@ export default function LeadForm({ state, result, client }) {
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.ok) {
-        setSubmitted(true); // ok → показываем «Спасибо»
+        setSubmitted(true);
       } else {
         setError('Не удалось отправить заявку. Попробуйте ещё раз или позвоните нам.');
       }
     } catch {
-      // Сеть недоступен / сервер упал — то же сообщение
       setError('Не удалось отправить заявку. Попробуйте ещё раз или позвоните нам.');
     } finally {
       setSending(false);
     }
   };
 
-  // После успешной отправки показываем подтверждение вместо формы
   if (submitted) {
     return (
       <section className="cta-block">
@@ -169,13 +132,10 @@ export default function LeadForm({ state, result, client }) {
       <h2 className="card-title">Оставить заявку</h2>
       <p className="subtitle cta-subtitle-margin">Свяжемся в выбранное время</p>
 
-      {/* Имя — обязательное поле, с иконкой человека */}
       <label className="form-group">
         <span className="label">Имя</span>
         <span className="input-wrapper">
-          <span className="input-icon">
-            <IconUser />
-          </span>
+          <span className="input-icon"><IconUser /></span>
           <input
             type="text"
             value={name}
@@ -187,13 +147,10 @@ export default function LeadForm({ state, result, client }) {
         </span>
       </label>
 
-      {/* Телефон — обязательный, маска через formatPhone (без сторонних библиотек), с иконкой телефона */}
       <label className="form-group">
         <span className="label">Телефон</span>
         <span className="input-wrapper">
-          <span className="input-icon">
-            <IconPhone />
-          </span>
+          <span className="input-icon"><IconPhone /></span>
           <input
             type="tel"
             value={phone}
@@ -205,7 +162,6 @@ export default function LeadForm({ state, result, client }) {
         </span>
       </label>
 
-      {/* Способ связи — radio, по умолчанию MAX */}
       <div className="form-group">
         <div className="label">Способ связи</div>
         <div className="radio-group">
@@ -225,23 +181,15 @@ export default function LeadForm({ state, result, client }) {
         </div>
       </div>
 
-      {/* Удобное время для звонка — select */}
       <label className="form-group form-group-last">
         <span className="label">Удобное время для звонка</span>
-        <select
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
-          className={selectCls}
-        >
+        <select value={time} onChange={(e) => setTime(e.target.value)} className={selectCls}>
           {CALL_TIMES.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
+            <option key={t} value={t}>{t}</option>
           ))}
         </select>
       </label>
 
-      {/* Согласие на обработку персональных данных (152-ФЗ) */}
       <div className="form-group" style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
         <input
           type="checkbox"
@@ -257,20 +205,12 @@ export default function LeadForm({ state, result, client }) {
         </label>
       </div>
 
-      {/* Кнопка неактивна без имени/телефона, без согласия и на время отправки */}
-      <button
-        type="submit"
-        disabled={!isValid || sending || !privacyAgreed}
-        className="button"
-      >
+      <button type="submit" disabled={!isValid || sending || !privacyAgreed} className="button">
         {sending ? 'Отправляем...' : 'Оставить заявку'}
       </button>
 
-      {/* Сообщение об ошибке отправки (в проде) */}
       {error && (
-        <p className="error-text" role="alert">
-          {error}
-        </p>
+        <p className="error-text" role="alert">{error}</p>
       )}
     </form>
   );
