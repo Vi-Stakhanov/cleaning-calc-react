@@ -731,9 +731,12 @@ body {
     gap: 16px;
   }
 
-  .card{
+  .card,
+  .price-block,
+  .cta-block{
     padding: 18px;
   }
+  
   
 }
 
