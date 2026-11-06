@@ -27,11 +27,25 @@ function usePageTitle(client) {
   }, [client.id]);
 }
 
+// Меняем CSS-тему при смене клиента
+function useTheme(client) {
+  useEffect(() => {
+    const root = document.documentElement;
+    if (client.id === 'carwash') {
+      root.classList.add('theme-carwash');
+    } else {
+      root.classList.remove('theme-carwash');
+    }
+    return () => root.classList.remove('theme-carwash');
+  }, [client.id]);
+}
+
 function HomePage() {
   const { clientId } = useParams();
   const client = getClient(clientId || 'cleaning');
 
   usePageTitle(client);
+  useTheme(client);
 
   const [state, setState] = useState(initialState);
 

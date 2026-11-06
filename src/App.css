@@ -4,6 +4,7 @@
 :root {
   --color-primary: #0039d1;
   --color-primary-hover: #0041ed;
+  --color-primary-muted: #93c5fd;
   --color-bg: #f6f8fb;
   --color-surface: #ffffff;
   --color-text: #2a2a2a;
@@ -14,6 +15,19 @@
   --radius: 14px;
   --box-shadow: 0 1px 12px 2px rgba(0, 0, 0, 0.05);
   --transition-fast: 0.2s;
+}
+
+.theme-carwash {
+  --color-primary: #0891b2;
+  --color-primary-hover: #0e7490;
+  --color-primary-muted: #8cc6d3;
+  --color-bg: #f0fdfa;
+  --color-surface: #ffffff;
+  --color-text: #134e4a;
+  --color-text-secondary: #0f766e;
+  --color-text-muted: #5eead4;
+  --color-border: #99f6e4;
+  --color-border-light: #ccfbf1;
 }
 
 /* Сброс стилей legend */
@@ -374,7 +388,7 @@ body {
 }
 
 .button:disabled {
-  background: #93c5fd;
+  background: var(--color-primary-muted);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
