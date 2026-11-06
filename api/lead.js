@@ -1,4 +1,3 @@
-@"
 import nodemailer from 'nodemailer';
 
 export default async function handler(req, res) {
@@ -32,47 +31,18 @@ export default async function handler(req, res) {
 
   const extrasText =
     Array.isArray(extras) && extras.length > 0
-      ? extras.map((e) => \`${e.label} — ${e.price} ₽ × ${e.qty || 1}\`).join('\n')
+      ? extras.map((e) => `${e.label} — ${e.price} ₽ × ${e.qty || 1}`).join('\n')
       : 'нет';
 
   const isCarwash = !!vehicleType;
 
   const subject = isCarwash
-    ? \`Новая заявка (мойка): ${vehicleType}, ${serviceType || 'не указан'}\`
-    : \`Новая заявка: ${cleaningType || serviceType || 'не указан'}, ${area || 0} м²\`;
+    ? `Новая заявка (мойка): ${vehicleType}, ${serviceType || 'не указан'}`
+    : `Новая заявка: ${cleaningType || serviceType || 'не указан'}, ${area || 0} м²`;
 
   const text = isCarwash
-    ? \`
-Имя: ${name}
-Телефон: ${phone}
-Способ связи: ${channel || 'не указан'}
-Удобное время: ${time || 'не указано'}
-
-Тип транспорта: ${vehicleType || 'не указан'}
-Пакет услуг: ${serviceType || 'не указан'}
-Цена пакета: ${packagePrice || 0} ₽
-
-Допуслуги:
-${extrasText}
-
-Итого: ${totalPrice || 0} ₽
-\`
-    : \`
-Имя: ${name}
-Телефон: ${phone}
-Способ связи: ${channel || 'не указан'}
-Удобное время: ${time || 'не указано'}
-
-Тип уборки: ${cleaningType || serviceType || 'не указан'}
-Площадь: ${area || 0} м²
-Комнаты: ${rooms || 0}
-Санузлы: ${bathrooms || 0}
-
-Допуслуги:
-${extrasText}
-
-Итого: ${totalPrice || 0} ₽
-\`;
+    ? `Имя: ${name}\nТелефон: ${phone}\nСпособ связи: ${channel || 'не указан'}\nУдобное время: ${time || 'не указано'}\n\nТип транспорта: ${vehicleType || 'не указан'}\nПакет услуг: ${serviceType || 'не указан'}\nЦена пакета: ${packagePrice || 0} ₽\n\nДопуслуги:\n${extrasText}\n\nИтого: ${totalPrice || 0} ₽`
+    : `Имя: ${name}\nТелефон: ${phone}\nСпособ связи: ${channel || 'не указан'}\nУдобное время: ${time || 'не указано'}\n\nТип уборки: ${cleaningType || serviceType || 'не указан'}\nПлощадь: ${area || 0} м²\nКомнаты: ${rooms || 0}\nСанузлы: ${bathrooms || 0}\n\nДопуслуги:\n${extrasText}\n\nИтого: ${totalPrice || 0} ₽`;
 
   const mailOptions = {
     from: smtpUser,
@@ -89,10 +59,10 @@ ${extrasText}
     if (telegramToken && telegramChatId) {
       try {
         const telegramMessage = isCarwash
-          ? \`🔔 Новая заявка (мойка)\n\nИмя: ${name}\nТелефон: ${phone}\nСвязь: ${channel || 'не указан'}\nВремя: ${time || 'не указано'}\n\nТип транспорта: ${vehicleType || 'не указан'}\nПакет: ${serviceType || 'не указан'}\nЦена пакета: ${packagePrice || 0} ₽\n\nДопуслуги:\n${extrasText}\n\nИтого: ${totalPrice || 0} ₽\`
-          : \`🔔 Новая заявка\n\nИмя: ${name}\nТелефон: ${phone}\nСвязь: ${channel || 'не указан'}\nВремя: ${time || 'не указано'}\n\nТип: ${cleaningType || serviceType || 'не указан'}\nПлощадь: ${area || 0} м²\nКомнаты: ${rooms || 0}\nСанузлы: ${bathrooms || 0}\n\nДопуслуги:\n${extrasText}\n\nИтого: ${totalPrice || 0} ₽\`;
+          ? `🔔 Новая заявка (мойка)\n\nИмя: ${name}\nТелефон: ${phone}\nСвязь: ${channel || 'не указан'}\nВремя: ${time || 'не указано'}\n\nТип транспорта: ${vehicleType || 'не указан'}\nПакет: ${serviceType || 'не указан'}\nЦена пакета: ${packagePrice || 0} ₽\n\nДопуслуги:\n${extrasText}\n\nИтого: ${totalPrice || 0} ₽`
+          : `🔔 Новая заявка\n\nИмя: ${name}\nТелефон: ${phone}\nСвязь: ${channel || 'не указан'}\nВремя: ${time || 'не указано'}\n\nТип: ${cleaningType || serviceType || 'не указан'}\nПлощадь: ${area || 0} м²\nКомнаты: ${rooms || 0}\nСанузлы: ${bathrooms || 0}\n\nДопуслуги:\n${extrasText}\n\nИтого: ${totalPrice || 0} ₽`;
 
-        await fetch(\`https://api.telegram.org/bot${telegramToken}/sendMessage\`, {
+        await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ chat_id: telegramChatId, text: telegramMessage }),
@@ -108,4 +78,3 @@ ${extrasText}
     return res.status(500).json({ error: 'Ошибка отправки письма' });
   }
 }
-"@ | Out-File -FilePath "api/lead.js" -Encoding utf8

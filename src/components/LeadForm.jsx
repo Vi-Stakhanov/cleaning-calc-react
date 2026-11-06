@@ -1,8 +1,3 @@
-@"
-/**
-src/components/LeadForm.jsx
-Форма заявки. Мульти-клиентность: cleaning и carwash.
-*/
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -185,4 +180,3 @@ export default function LeadForm({ state, result, client }) {
     </form>
   );
 }
-"@ | Out-File -FilePath "src/components/LeadForm.jsx" -Encoding utf8
