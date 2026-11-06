@@ -18,16 +18,16 @@
 }
 
 .theme-carwash {
-  --color-primary: #0891b2;
-  --color-primary-hover: #0e7490;
-  --color-primary-muted: #8cc6d3;
-  --color-bg: #f0fdfa;
+  --color-primary: #FF6B00;
+  --color-primary-hover: #E53935;
+  --color-primary-muted: #e4955c;
+  --color-bg: #FAFAFA;
   --color-surface: #ffffff;
-  --color-text: #134e4a;
-  --color-text-secondary: #0f766e;
-  --color-text-muted: #5eead4;
-  --color-border: #99f6e4;
-  --color-border-light: #ccfbf1;
+  --color-text: #2D2D2D;
+  --color-text-secondary: #757575;
+  --color-text-muted: #b8b8b8;
+  --color-border: #E0E0E0;
+  --color-border-light: #f4c8a8;
 }
 
 /* Сброс стилей legend */
@@ -430,17 +430,20 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--color-primary);
   transition: all 0.2s;
   text-decoration: none;
 }
 
 .social-icon:hover {
-  
+  color: var(--color-primary-hover);
 }
 
 .social-icon svg {
   width: 20px;
   height: 20px;
+  fill: currentColor;
+  transition: all 0.2s;
 }
 
 .footer-brand {
@@ -496,6 +499,81 @@ body {
   height: 17px;
 }
 
+/* === Финальный фикс radio/checkbox === */
+
+/* 1. Отключаем нативный рендер у всех radio и checkbox */
+.radio-label input[type="radio"],
+.checkbox-label input[type="checkbox"],
+.choice-input[type="radio"],
+.choice-input[type="checkbox"] {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  accent-color: transparent !important;
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  vertical-align: middle;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 2. Radio — круглые 18px, без фона */
+.radio-label input[type="radio"],
+.choice-input[type="radio"] {
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 50% !important;
+  border-width: 1.5px !important;
+  background-image: none !important;
+  background-size: auto !important;
+}
+
+/* 3. Checked radio — белая точка через radial-gradient */
+.radio-label input[type="radio"]:checked,
+.choice-input[type="radio"]:checked {
+  background-color: var(--color-surface) !important;
+  border-color: var(--color-primary) !important;
+  background-image: radial-gradient(circle, var(--color-primary) 55%, transparent 56%) !important;
+}
+
+/* 4. Checkbox — квадратные 17px */
+.checkbox-label input[type="checkbox"],
+.choice-input[type="checkbox"] {
+  width: 17px !important;
+  height: 17px !important;
+  border-radius: 3px !important;
+  background-image: none !important;
+  background-size: auto !important;
+}
+
+/* 5. Checked checkbox — цветной фон + SVG галочка */
+.checkbox-label input[type="checkbox"]:checked,
+.choice-input[type="checkbox"]:checked {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") !important;
+  background-size: 15px 15px !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+}
+
+/* 6. Убираем все hover/focus эффекты */
+.radio-label input[type="radio"]:hover,
+.radio-label input[type="radio"]:focus,
+.checkbox-label input[type="checkbox"]:hover,
+.checkbox-label input[type="checkbox"]:focus,
+.choice-input[type="radio"]:hover,
+.choice-input[type="radio"]:focus,
+.choice-input[type="checkbox"]:hover,
+.choice-input[type="checkbox"]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 .extra-text {
   display: flex;
   flex-wrap: wrap;
@@ -514,19 +592,22 @@ body {
   font-weight: 600;
 }
 
-
-
 /* Radio тип уборки */
 .radio-list {
   display: flex;
   flex-direction: column;
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
   gap: 12px;
 }
 
 .radio-list-horizontal {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 24px;
+  /* display: flex; */
+  /* flex-wrap: wrap; */
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  /* gap: 12px 24px; */
+  gap: 12px;
 }
 
 /* Поля параметров (площадь, комнаты, санузлы) */
@@ -748,8 +829,6 @@ body {
     row-gap: 10px;
   }
 
-  
-
   .extra-item .qty-counter{
     margin-left: auto;
   }
@@ -762,6 +841,10 @@ body {
   .price-block,
   .cta-block{
     padding: 18px;
+  }
+
+  .radio-list-horizontal {
+    grid-template-columns: repeat(1, 1fr) !important;
   }
   
   
