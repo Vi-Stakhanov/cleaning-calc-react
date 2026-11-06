@@ -45,12 +45,12 @@ export default function LeadForm({ state, result, client }) {
   const isValid = name.trim().length > 0 && phone.replace(/\D/g, '').length >= 11;
   const isCarwash = client?.id === 'carwash';
 
-  // Универсальное получение названия пакета/тарифа
+  // Название пакета/тарифа
   const serviceLabel = isCarwash
     ? (client?.packages?.find((p) => p.id === state.type)?.name ?? state.type)
     : (client?.tariffs?.find((t) => t.id === state.type)?.name ?? state.type);
 
-  // Название типа транспорта для автомойки
+  // Тип транспорта для автомойки
   const vehicleLabel = isCarwash
     ? (client?.vehicleTypes?.find((v) => v.id === state.vehicleType)?.name ?? state.vehicleType)
     : null;
