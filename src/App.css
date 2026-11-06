@@ -485,7 +485,7 @@ body {
     
   }
 
-.extra-item .checkbox-label {
+.extra-item .checkbox-label{
   display: flex;
   gap: 12px;
   cursor: pointer;
@@ -596,8 +596,6 @@ body {
 .radio-list {
   display: flex;
   flex-direction: column;
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
   gap: 12px;
 }
 
