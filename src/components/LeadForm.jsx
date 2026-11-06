@@ -1,3 +1,4 @@
+@"
 /**
 src/components/LeadForm.jsx
 Форма заявки. Мульти-клиентность: cleaning и carwash.
@@ -45,17 +46,14 @@ export default function LeadForm({ state, result, client }) {
   const isValid = name.trim().length > 0 && phone.replace(/\D/g, '').length >= 11;
   const isCarwash = client?.id === 'carwash';
 
-  // Название пакета/тарифа
   const serviceLabel = isCarwash
     ? (client?.packages?.find((p) => p.id === state.type)?.name ?? state.type)
     : (client?.tariffs?.find((t) => t.id === state.type)?.name ?? state.type);
 
-  // Тип транспорта для автомойки
   const vehicleLabel = isCarwash
     ? (client?.vehicleTypes?.find((v) => v.id === state.vehicleType)?.name ?? state.vehicleType)
     : null;
 
-  // Цена пакета с учётом типа транспорта
   const packagePrice = isCarwash
     ? (client?.vehicleTypes?.find((v) => v.id === state.vehicleType)?.prices?.[state.type] ?? 0)
     : null;
@@ -69,8 +67,6 @@ export default function LeadForm({ state, result, client }) {
     }
 
     const extrasList = client?.extras ?? [];
-    
-    // Формируем заявку в зависимости от типа клиента
     const lead = {
       name: name.trim(),
       phone: phone.replace(/\D/g, ''),
@@ -79,11 +75,9 @@ export default function LeadForm({ state, result, client }) {
       totalPrice: result.total,
       serviceType: serviceLabel,
       ...(isCarwash ? {
-        // Для автомойки
         vehicleType: vehicleLabel,
         packagePrice: packagePrice,
       } : {
-        // Для клининга
         area: Number(state.area),
         rooms: Number(state.rooms),
         bathrooms: Number(state.bathrooms),
@@ -144,14 +138,7 @@ export default function LeadForm({ state, result, client }) {
         <span className="label">Имя</span>
         <span className="input-wrapper">
           <span className="input-icon"><IconUser /></span>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Ваше имя"
-            required
-            className={inputCls}
-          />
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Ваше имя" required className={inputCls} />
         </span>
       </label>
 
@@ -159,14 +146,7 @@ export default function LeadForm({ state, result, client }) {
         <span className="label">Телефон</span>
         <span className="input-wrapper">
           <span className="input-icon"><IconPhone /></span>
-          <input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(formatPhone(e.target.value))}
-            placeholder="+7 (___) ___-__-__"
-            required
-            className={inputCls}
-          />
+          <input type="tel" value={phone} onChange={(e) => setPhone(formatPhone(e.target.value))} placeholder="+7 (___) ___-__-__" required className={inputCls} />
         </span>
       </label>
 
@@ -175,14 +155,7 @@ export default function LeadForm({ state, result, client }) {
         <div className="radio-group">
           {CHANNELS.map((ch) => (
             <label key={ch} className="radio-label">
-              <input
-                type="radio"
-                name="channel"
-                value={ch}
-                checked={channel === ch}
-                onChange={() => setChannel(ch)}
-                className="choice-input"
-              />
+              <input type="radio" name="channel" value={ch} checked={channel === ch} onChange={() => setChannel(ch)} className="choice-input" />
               {ch}
             </label>
           ))}
@@ -192,21 +165,12 @@ export default function LeadForm({ state, result, client }) {
       <label className="form-group form-group-last">
         <span className="label">Удобное время для звонка</span>
         <select value={time} onChange={(e) => setTime(e.target.value)} className={selectCls}>
-          {CALL_TIMES.map((t) => (
-            <option key={t} value={t}>{t}</option>
-          ))}
+          {CALL_TIMES.map((t) => <option key={t} value={t}>{t}</option>)}
         </select>
       </label>
 
       <div className="form-group" style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-        <input
-          type="checkbox"
-          id="privacy"
-          checked={privacyAgreed}
-          onChange={(e) => setPrivacyAgreed(e.target.checked)}
-          style={{ marginTop: '1px', accentColor: 'var(--color-primary)', width: '17px', height: '17px' }}
-          required
-        />
+        <input type="checkbox" id="privacy" checked={privacyAgreed} onChange={(e) => setPrivacyAgreed(e.target.checked)} style={{ marginTop: '1px', accentColor: 'var(--color-primary)', width: '17px', height: '17px' }} required />
         <label htmlFor="privacy" style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.4' }}>
           Я даю согласие на обработку персональных данных в соответствии с{' '}
           <Link to="/privacy" style={{ color: 'var(--color-primary)', textDecoration: 'underline' }}>Политикой конфиденциальности</Link>
@@ -217,9 +181,8 @@ export default function LeadForm({ state, result, client }) {
         {sending ? 'Отправляем...' : 'Оставить заявку'}
       </button>
 
-      {error && (
-        <p className="error-text" role="alert">{error}</p>
-      )}
+      {error && <p className="error-text" role="alert">{error}</p>}
     </form>
   );
 }
+"@ | Out-File -FilePath "src/components/LeadForm.jsx" -Encoding utf8
