@@ -89,6 +89,10 @@ function HomePage() {
       </header>
 
       <main className="container">
+        <div className="mobile-company">
+          <div className="mobile-company-name">{client.name}</div>
+          <div className="mobile-company-subtitle">{client.subtitle}</div>
+        </div>
         <h1 className="page-title">
           Калькулятор стоимости {client.id === 'carwash' ? 'мойки' : 'уборки'}
         </h1>
