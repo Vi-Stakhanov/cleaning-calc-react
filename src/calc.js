@@ -31,22 +31,29 @@ export function calcPrice({ type, vehicleType, area, bathrooms, extras, client }
     bathroomsCost = paidBathrooms * EXTRA_BATHROOM_PRICE;
   }
 
-  // Допуслуги (общие для обоих)
+  // Допуслуги: химчистка считается отдельно от остальных
   const extrasList = client?.extras ?? EXTRAS;
   let extrasCost = 0;
+  let chemCost = 0;
   for (const extra of extrasList) {
     const qty = Math.max(0, Number(extras?.[extra.id]) || 0);
     // Цена зависит от типа транспорта, если у услуги есть карта prices
     const unitPrice = extra.prices?.[vehicleType] ?? extra.price ?? 0;
-    extrasCost += qty * unitPrice;
+    const cost = qty * unitPrice;
+    if (extra.category === 'Химчистка') {
+      chemCost += cost;
+    } else {
+      extrasCost += cost;
+    }
   }
 
-  const total = base + bathroomsCost + extrasCost;
+  const total = base + bathroomsCost + extrasCost + chemCost;
 
   return {
     base,
     bathroomsCost,
     extrasCost,
+    chemCost,
     total,
     min: total * (1 - PRICE_RANGE),
     max: total * (1 + PRICE_RANGE),

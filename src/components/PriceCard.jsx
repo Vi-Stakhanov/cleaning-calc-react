@@ -1,18 +1,19 @@
 /**
 src/components/PriceCard.jsx
 Карточка результата. Мульти-клиентность: cleaning и carwash.
-Для автомойки: тип транспорта, пакет с ценой, допы.
+Для автомойки: тип транспорта, пакет с ценой, доп. опции, химчистка.
 Для клининга: база, санузлы, допуслуги.
 */
 import { formatRub } from '../calc.js';
 
 export default function PriceCard({ result, client, state }) {
   const isCarwash = client?.id === 'carwash';
-  const { base, bathroomsCost, extrasCost, total } = result;
+  const { base, bathroomsCost, extrasCost, chemCost = 0, total } = result;
 
   const selectedVehicle = isCarwash
     ? client?.vehicleTypes?.find((v) => v.id === state?.vehicleType)
     : null;
+
   const selectedPackage = isCarwash
     ? client?.packages?.find((p) => p.id === state?.type)
     : null;
@@ -29,7 +30,7 @@ export default function PriceCard({ result, client, state }) {
       <ul className="price-details">
         {isCarwash ? (
           <>
-            {/* Тип транспорта — заголовок + название справа */}
+            {/* Тип транспорта — название справа */}
             {selectedVehicle && (
               <li className="price-row">
                 <span>Тип транспорта</span>
@@ -43,10 +44,15 @@ export default function PriceCard({ result, client, state }) {
                 <span>{formatRub(packagePrice)}</span>
               </li>
             )}
-            {/* Доп. опции — сумма */}
+            {/* Доп. опции — без химчистки */}
             <li className="price-row">
               <span>Доп. опции</span>
               <span>{formatRub(extrasCost)}</span>
+            </li>
+            {/* Химчистка — всегда видна */}
+            <li className="price-row">
+              <span>Химчистка</span>
+              <span>{formatRub(chemCost)}</span>
             </li>
           </>
         ) : (
