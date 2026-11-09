@@ -36,10 +36,13 @@ export function calcPrice({ type, vehicleType, area, bathrooms, extras, client }
   let extrasCost = 0;
   for (const extra of extrasList) {
     const qty = Math.max(0, Number(extras?.[extra.id]) || 0);
-    extrasCost += qty * extra.price;
+    // Цена зависит от типа транспорта, если у услуги есть карта prices
+    const unitPrice = extra.prices?.[vehicleType] ?? extra.price ?? 0;
+    extrasCost += qty * unitPrice;
   }
 
   const total = base + bathroomsCost + extrasCost;
+
   return {
     base,
     bathroomsCost,

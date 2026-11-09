@@ -28,6 +28,50 @@ export default function CalcForm({ state, onChange, client }) {
     return vehicle?.prices?.[packageId] ?? 0;
   };
 
+  // Цена допуслуги: для химчистки зависит от типа транспорта
+  const getExtraPrice = (extra) => extra.prices?.[state.vehicleType] ?? extra.price ?? 0;
+
+  // Группировка допуслуг по категориям (кроме химчистки)
+  const groupedExtras = (client.extras ?? [])
+    .filter((ex) => ex.category !== 'Химчистка')
+    .reduce((acc, ex) => {
+      const cat = ex.category || 'Другое';
+      (acc[cat] = acc[cat] || []).push(ex);
+      return acc;
+    }, {});
+
+  // Химчистка — отдельная карточка
+  const chemExtras = (client.extras ?? []).filter((ex) => ex.category === 'Химчистка');
+
+  // Одна строка допуслуги
+  const renderExtraRow = (extra) => {
+    const qty = state.extras[extra.id] || 0;
+    return (
+      <div key={extra.id} className={`extra-item ${isCarwash ? 'extra-item-compact' : ''}`}>
+        <label className="checkbox-label">
+          <input
+            type="checkbox"
+            checked={qty > 0}
+            onChange={(e) => toggleExtra(extra.id, e.target.checked)}
+            className="choice-input"
+          />
+          <span className="extra-text">
+            <span className="extra-name">{extra.name}</span>
+            <span className="extra-price">{getExtraPrice(extra)} {extra.unit || '₽'}</span>
+          </span>
+        </label>
+        {qty > 0 && !isCarwash && (
+          <QtyCounter
+            value={qty}
+            onChange={(v) => setExtraQty(extra.id, v)}
+            min={1}
+            max={99}
+          />
+        )}
+      </div>
+    );
+  };
+
   return (
     <form className="calc-form" onSubmit={(e) => e.preventDefault()}>
       {location.pathname === '/offer' && (
@@ -149,38 +193,38 @@ export default function CalcForm({ state, onChange, client }) {
       )}
 
       {/* Доп. услуги */}
-      <div className={cardCls}>
-        <div className={cardTitleCls}>{isCarwash ? 'Дополнительные опции' : 'Допуслуги'}</div>
-        <div className="checkbox-list">
-          {client.extras.map((extra) => {
-            const qty = state.extras[extra.id] || 0;
-            return (
-              <div key={extra.id} className={`extra-item ${isCarwash ? 'extra-item-compact' : ''}`}>
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={qty > 0}
-                    onChange={(e) => toggleExtra(extra.id, e.target.checked)}
-                    className="choice-input"
-                  />
-                  <span className="extra-text">
-                    <span className="extra-name">{extra.name}</span>
-                    <span className="extra-price">{extra.price} {extra.unit || '₽'}</span>
-                  </span>
-                </label>
-                {qty > 0 && !isCarwash && (
-                  <QtyCounter
-                    value={qty}
-                    onChange={(v) => setExtraQty(extra.id, v)}
-                    min={1}
-                    max={99}
-                  />
-                )}
+      {isCarwash ? (
+        <>
+          <div className={cardCls}>
+            <div className={cardTitleCls}>Дополнительные опции</div>
+            {Object.entries(groupedExtras).map(([category, items]) => (
+              <div key={category} className="extra-category">
+                <div className="extra-category-title">{category}</div>
+                <div className="checkbox-list">
+                  {items.map((ex) => renderExtraRow(ex))}
+                </div>
               </div>
-            );
-          })}
+            ))}
+          </div>
+
+          {/* Химчистка — отдельная карточка */}
+          {chemExtras.length > 0 && (
+            <div className={cardCls}>
+              <div className={cardTitleCls}>Химчистка</div>
+              <div className="checkbox-list">
+                {chemExtras.map((ex) => renderExtraRow(ex))}
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className={cardCls}>
+          <div className={cardTitleCls}>Допуслуги</div>
+          <div className="checkbox-list">
+            {(client.extras ?? []).map((extra) => renderExtraRow(extra))}
+          </div>
         </div>
-      </div>
+      )}
     </form>
   );
 }

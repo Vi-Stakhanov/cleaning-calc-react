@@ -83,7 +83,7 @@ export default function LeadForm({ state, result, client }) {
           id: ex.id,
           label: ex.name ?? ex.label,
           qty: Math.max(0, Number(state.extras[ex.id]) || 0),
-          price: ex.price,
+          price: ex.prices?.[state.vehicleType] ?? ex.price ?? 0,
         })),
     };
 

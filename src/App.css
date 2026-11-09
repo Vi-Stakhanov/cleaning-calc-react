@@ -803,6 +803,23 @@ body {
   color: var(--color-text-secondary);
 }
 
+.extra-category {
+  margin-bottom: 20px;
+}
+.extra-category:last-child {
+  margin-bottom: 0;
+}
+.extra-category-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
 @media (max-width: 1199px) {
   
 }
