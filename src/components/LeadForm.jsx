@@ -62,16 +62,6 @@ export default function LeadForm({ state, result, client }) {
     }
 
     const extrasList = client?.extras ?? [];
-    const selected = extrasList.filter(
-      (ex) => Math.max(0, Number(state.extras?.[ex.id]) || 0) > 0
-    );
-    const mapExtra = (ex) => ({
-      id: ex.id,
-      label: ex.name ?? ex.label,
-      qty: Math.max(0, Number(state.extras?.[ex.id]) || 0),
-      price: ex.prices?.[state.vehicleType] ?? ex.price ?? 0,
-    });
-
     const lead = {
       name: name.trim(),
       phone: phone.replace(/\D/g, ''),
@@ -79,15 +69,22 @@ export default function LeadForm({ state, result, client }) {
       time,
       totalPrice: result.total,
       serviceType: serviceLabel,
-      ...(isCarwash
-        ? { vehicleType: vehicleLabel, packagePrice }
-        : {
-            area: Number(state.area),
-            rooms: Number(state.rooms),
-            bathrooms: Number(state.bathrooms),
-          }),
-      extras: selected.filter((ex) => ex.category !== 'Химчистка').map(mapExtra),
-      chem: selected.filter((ex) => ex.category === 'Химчистка').map(mapExtra),
+      ...(isCarwash ? {
+        vehicleType: vehicleLabel,
+        packagePrice: packagePrice,
+      } : {
+        area: Number(state.area),
+        rooms: Number(state.rooms),
+        bathrooms: Number(state.bathrooms),
+      }),
+      extras: extrasList
+        .filter((ex) => Math.max(0, Number(state.extras?.[ex.id]) || 0) > 0)
+        .map((ex) => ({
+          id: ex.id,
+          label: ex.name ?? ex.label,
+          qty: Math.max(0, Number(state.extras[ex.id]) || 0),
+          price: ex.prices?.[state.vehicleType] ?? ex.price ?? 0,
+        })),
     };
 
     if (import.meta.env.DEV) {
@@ -106,12 +103,7 @@ export default function LeadForm({ state, result, client }) {
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.ok) {
-        if (data.emailOk || data.tgOk) {
-          setSubmitted(true);
-        } else {
-          // ДИАГНОСТИКА: причина будет видна прямо на экране
-          setError('Доставка не удалась. Диагностика: ' + JSON.stringify(data.debug));
-        }
+        setSubmitted(true);
       } else {
         setError('Не удалось отправить заявку. Попробуйте ещё раз или позвоните нам.');
       }
@@ -184,7 +176,7 @@ export default function LeadForm({ state, result, client }) {
         {sending ? 'Отправляем...' : 'Оставить заявку'}
       </button>
 
-      {error && <p className="error-text" role="alert" style={{ wordBreak: 'break-word' }}>{error}</p>}
+      {error && <p className="error-text" role="alert">{error}</p>}
     </form>
   );
 }
