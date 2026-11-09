@@ -5,7 +5,6 @@ const TG_CHAT_ID = '7153157021';
 // « × 2» только если количество больше 1
 const fmtQty = (q) => (Number(q) > 1 ? ` × ${q}` : '');
 
-// Строки таблицы для письма
 function rowsHtml(list) {
   return list
     .map(
@@ -89,6 +88,17 @@ function buildTelegramText(lead) {
   ].join('\n');
 }
 
+// Отправка одного канала с возвратом статуса и текста ответа
+async function sendChannel(promise) {
+  try {
+    const r = await promise;
+    const body = (await r.text().catch(() => '')).slice(0, 300);
+    return { status: r.status, body };
+  } catch (err) {
+    return { status: 'network_error', body: String(err) };
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
@@ -103,41 +113,42 @@ export default async function handler(req, res) {
   const emailHtml = buildEmailHtml(lead);
   const tgText = buildTelegramText(lead);
 
-  const results = await Promise.allSettled([
-    fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: 'Калькулятор заявок <leads@calclead.ru>',
-        to: TO_EMAIL,
-        subject: `Заявка: ${lead.serviceType} — ${lead.totalPrice} ₽`,
-        html: emailHtml,
-      }),
-    }),
-    fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: TG_CHAT_ID,
-        text: tgText,
-        parse_mode: 'HTML',
-      }),
-    }),
+  const [emailInfo, tgInfo] = await Promise.all([
+    sendChannel(
+      fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'Калькулятор заявок <leads@calclead.ru>',
+          to: TO_EMAIL,
+          subject: `Заявка: ${lead.serviceType} — ${lead.totalPrice} ₽`,
+          html: emailHtml,
+        }),
+      })
+    ),
+    sendChannel(
+      fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: TG_CHAT_ID,
+          text: tgText,
+          parse_mode: 'HTML',
+        }),
+      })
+    ),
   ]);
 
-  const [emailRes, tgRes] = results;
-  const emailOk = emailRes.status === 'fulfilled' && emailRes.value.ok;
-  const tgOk = tgRes.status === 'fulfilled' && tgRes.value.ok;
+  const emailOk = emailInfo.status === 200 || emailInfo.status === 201;
+  const tgOk = tgInfo.status === 200;
 
-  if (!emailOk || !tgOk) {
-    console.error('Lead delivery issues:', {
-      email: emailRes.status === 'fulfilled' ? emailRes.value.status : emailRes.reason,
-      telegram: tgRes.status === 'fulfilled' ? tgRes.value.status : tgRes.reason,
-    });
-  }
-
-  return res.status(200).json({ ok: true, emailOk, tgOk });
+  return res.status(200).json({
+    ok: true,
+    emailOk,
+    tgOk,
+    debug: { email: emailInfo, telegram: tgInfo },
+  });
 }

@@ -86,7 +86,6 @@ export default function LeadForm({ state, result, client }) {
             rooms: Number(state.rooms),
             bathrooms: Number(state.bathrooms),
           }),
-      // Допуслуги и химчистка — раздельно
       extras: selected.filter((ex) => ex.category !== 'Химчистка').map(mapExtra),
       chem: selected.filter((ex) => ex.category === 'Химчистка').map(mapExtra),
     };
@@ -107,7 +106,12 @@ export default function LeadForm({ state, result, client }) {
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.ok) {
-        setSubmitted(true);
+        if (data.emailOk || data.tgOk) {
+          setSubmitted(true);
+        } else {
+          // ДИАГНОСТИКА: причина будет видна прямо на экране
+          setError('Доставка не удалась. Диагностика: ' + JSON.stringify(data.debug));
+        }
       } else {
         setError('Не удалось отправить заявку. Попробуйте ещё раз или позвоните нам.');
       }
@@ -180,7 +184,7 @@ export default function LeadForm({ state, result, client }) {
         {sending ? 'Отправляем...' : 'Оставить заявку'}
       </button>
 
-      {error && <p className="error-text" role="alert">{error}</p>}
+      {error && <p className="error-text" role="alert" style={{ wordBreak: 'break-word' }}>{error}</p>}
     </form>
   );
 }
