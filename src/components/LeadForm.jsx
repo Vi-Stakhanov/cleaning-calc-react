@@ -78,7 +78,15 @@ export default function LeadForm({ state, result, client }) {
         bathrooms: Number(state.bathrooms),
       }),
       extras: extrasList
-        .filter((ex) => Math.max(0, Number(state.extras?.[ex.id]) || 0) > 0)
+        .filter((ex) => ex.category !== 'Химчистка' && Math.max(0, Number(state.extras?.[ex.id]) || 0) > 0)
+        .map((ex) => ({
+          id: ex.id,
+          label: ex.name ?? ex.label,
+          qty: Math.max(0, Number(state.extras[ex.id]) || 0),
+          price: ex.prices?.[state.vehicleType] ?? ex.price ?? 0,
+        })),
+      chem: extrasList
+        .filter((ex) => ex.category === 'Химчистка' && Math.max(0, Number(state.extras?.[ex.id]) || 0) > 0)
         .map((ex) => ({
           id: ex.id,
           label: ex.name ?? ex.label,
