@@ -62,6 +62,16 @@ export default function LeadForm({ state, result, client }) {
     }
 
     const extrasList = client?.extras ?? [];
+    const selected = extrasList.filter(
+      (ex) => Math.max(0, Number(state.extras?.[ex.id]) || 0) > 0
+    );
+    const mapExtra = (ex) => ({
+      id: ex.id,
+      label: ex.name ?? ex.label,
+      qty: Math.max(0, Number(state.extras?.[ex.id]) || 0),
+      price: ex.prices?.[state.vehicleType] ?? ex.price ?? 0,
+    });
+
     const lead = {
       name: name.trim(),
       phone: phone.replace(/\D/g, ''),
@@ -69,22 +79,16 @@ export default function LeadForm({ state, result, client }) {
       time,
       totalPrice: result.total,
       serviceType: serviceLabel,
-      ...(isCarwash ? {
-        vehicleType: vehicleLabel,
-        packagePrice: packagePrice,
-      } : {
-        area: Number(state.area),
-        rooms: Number(state.rooms),
-        bathrooms: Number(state.bathrooms),
-      }),
-      extras: extrasList
-        .filter((ex) => Math.max(0, Number(state.extras?.[ex.id]) || 0) > 0)
-        .map((ex) => ({
-          id: ex.id,
-          label: ex.name ?? ex.label,
-          qty: Math.max(0, Number(state.extras[ex.id]) || 0),
-          price: ex.prices?.[state.vehicleType] ?? ex.price ?? 0,
-        })),
+      ...(isCarwash
+        ? { vehicleType: vehicleLabel, packagePrice }
+        : {
+            area: Number(state.area),
+            rooms: Number(state.rooms),
+            bathrooms: Number(state.bathrooms),
+          }),
+      // Допуслуги и химчистка — раздельно
+      extras: selected.filter((ex) => ex.category !== 'Химчистка').map(mapExtra),
+      chem: selected.filter((ex) => ex.category === 'Химчистка').map(mapExtra),
     };
 
     if (import.meta.env.DEV) {
