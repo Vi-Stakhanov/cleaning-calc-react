@@ -8,6 +8,7 @@ import ScrollToTop from './components/ScrollToTop.jsx';
 import Privacy from './pages/Privacy.jsx';
 import { calcPrice } from './calc.js';
 import { getClient } from './config/clients.js';
+import MobilePriceBar from './components/MobilePriceBar.jsx';
 import './App.css';
 
 const initialState = {
@@ -105,6 +106,8 @@ function HomePage() {
           </div>
         </div>
       </main>
+
+      <MobilePriceBar total={result.total} />
 
       <footer className="footer">
         <div className="footer-inner">
