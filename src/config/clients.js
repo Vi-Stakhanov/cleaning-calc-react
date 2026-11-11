@@ -35,18 +35,19 @@ export const clients = {
     phone: '+7 (999) 888-82-22',
     telegram: '@vitalya_stakhanov',
     packages: [
-      { id: 'body', name: 'Кузов' },
+      { id: 'rinse_chem', name: 'Опаласкивание с химией' },
+      { id: 'body', name: 'Кузов + коврики' },
       { id: 'complex', name: 'Комплекс' },
     ],
     vehicleTypes: [
-      { id: 'sedan', name: 'Седан', prices: { body: 500, complex: 900 } },
-      { id: 'crossover', name: 'Кроссовер', prices: { body: 600, complex: 1100 } },
-      { id: 'suv', name: 'Внедорожник', prices: { body: 700, complex: 1200 } },
-      { id: 'minibus', name: 'Микроавтобус', prices: { body: 800, complex: 1400 } },
-      { id: 'bus', name: 'Автобус', prices: { body: 1250, complex: 2250 } },
-      { id: 'truck10', name: 'Грузовой 10т', prices: { body: 1500, complex: 2700 } },
-      { id: 'truck', name: 'Фура', prices: { body: 1600, complex: 2900 } },
-      { id: 'special', name: 'Спецтехника', prices: { body: 1750, complex: 3150 } },
+      { id: 'sedan', name: 'Седан', prices: { rinse_chem: 350, body: 500, complex: 900 } },
+      { id: 'crossover', name: 'Кроссовер', prices: { rinse_chem: 420, body: 600, complex: 1100 } },
+      { id: 'suv', name: 'Внедорожник', prices: { rinse_chem: 490, body: 700, complex: 1200 } },
+      { id: 'minibus', name: 'Микроавтобус', prices: { rinse_chem: 560, body: 800, complex: 1400 } },
+      { id: 'bus', name: 'Автобус', prices: { rinse_chem: 880, body: 1250, complex: 2250 } },
+      { id: 'truck10', name: 'Грузовой 10т', prices: { rinse_chem: 1050, body: 1500, complex: 2700 } },
+      { id: 'truck', name: 'Фура', prices: { rinse_chem: 1150, body: 1600, complex: 2900 } },
+      { id: 'special', name: 'Спецтехника', prices: { rinse_chem: 1250, body: 1750, complex: 3150 } },
     ],
     extras: [
       // Кузов и защита

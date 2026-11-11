@@ -6,7 +6,7 @@ export default function Privacy() {
   return (
     <div className="container" style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 24px' }}>
       <button 
-        onClick={() => navigate('/')}
+        onClick={() => navigate(-1)}
         className="back-button"
       >
         ← назад

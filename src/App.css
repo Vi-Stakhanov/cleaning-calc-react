@@ -607,12 +607,12 @@ body {
 }
 
 .radio-list-horizontal {
-  /* display: flex; */
-  /* flex-wrap: wrap; */
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
-  /* gap: 12px 24px; */
-  gap: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  /* display: grid !important; */
+  /* grid-template-columns: repeat(3, 1fr) !important; */
+  gap: 12px 24px;
+  /* gap: 12px; */
 }
 
 /* Поля параметров (площадь, комнаты, санузлы) */
@@ -770,7 +770,7 @@ body {
 .back-button {
   background: none;
   border: none;
-  color: #2563eb;
+  color: var(--color-primary);
   font-size: 18px;
   font-weight: 500;
   cursor: pointer;
@@ -911,7 +911,8 @@ body {
   }
 
   .radio-list-horizontal {
-    grid-template-columns: repeat(1, 1fr) !important;
+    /* grid-template-columns: repeat(1, 1fr) !important; */
+    flex-direction: column;
   }
   
   .mobile-company {

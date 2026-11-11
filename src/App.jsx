@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Routes, Route, Link, useParams } from 'react-router-dom';
+import { Routes, Route, Link, useParams, useLocation } from 'react-router-dom';
 import CalcForm from './components/CalcForm.jsx';
 import PriceCard from './components/PriceCard.jsx';
 import LeadForm from './components/LeadForm.jsx';
@@ -28,35 +28,52 @@ function usePageTitle(client) {
   }, [client.id]);
 }
 
-// Меняем CSS-тему при смене клиента
-function useTheme(client) {
+// Глобальная тема по URL + localStorage (работает и для /privacy)
+function useGlobalTheme() {
+  const location = useLocation();
+  
   useEffect(() => {
     const root = document.documentElement;
-    if (client.id === 'carwash') {
+    
+    // Запоминаем клиента при посещении главной страницы
+    if (location.pathname === '/carwash') {
+      localStorage.setItem('lastClient', 'carwash');
+    } else if (location.pathname === '/' || location.pathname === '/cleaning') {
+      localStorage.setItem('lastClient', 'cleaning');
+    }
+    
+    // Определяем тему: по URL или по последнему сохранённому клиенту
+    let shouldUseCarwash = false;
+    
+    if (location.pathname.includes('carwash')) {
+      shouldUseCarwash = true;
+    } else if (location.pathname === '/privacy' || location.pathname === '/offer') {
+      // Для общих страниц берём из localStorage
+      shouldUseCarwash = localStorage.getItem('lastClient') === 'carwash';
+    }
+    
+    if (shouldUseCarwash) {
       root.classList.add('theme-carwash');
     } else {
       root.classList.remove('theme-carwash');
     }
-    return () => root.classList.remove('theme-carwash');
-  }, [client.id]);
+  }, [location.pathname]);
 }
 
 function HomePage() {
   const { clientId } = useParams();
   const client = getClient(clientId || 'cleaning');
-
   usePageTitle(client);
-  useTheme(client);
-
+  
   const [state, setState] = useState(initialState);
-
+  
   useEffect(() => {
     const defaultType = client.id === 'carwash'
       ? (client.packages[0]?.id ?? 'body')
       : (client.tariffs[0]?.id ?? 'regular');
     setState({ ...initialState, type: defaultType, vehicleType: 'sedan' });
   }, [client.id]);
-
+  
   const result = useMemo(
     () =>
       calcPrice({
@@ -69,7 +86,7 @@ function HomePage() {
       }),
     [state, client],
   );
-
+  
   return (
     <>
       <header className="header">
@@ -88,7 +105,7 @@ function HomePage() {
           </a>
         </div>
       </header>
-
+      
       <main className="container">
         <div className="mobile-company">
           <div className="mobile-company-name">{client.name}</div>
@@ -106,9 +123,9 @@ function HomePage() {
           </div>
         </div>
       </main>
-
+      
       <MobilePriceBar total={result.total} />
-
+      
       <footer className="footer">
         <div className="footer-inner">
           <div className="footer-socials">
@@ -136,6 +153,8 @@ function HomePage() {
 }
 
 export default function App() {
+  useGlobalTheme(); // ← новая строка: глобальная тема
+  
   return (
     <>
       <ScrollToTop />
