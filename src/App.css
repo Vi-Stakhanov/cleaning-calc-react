@@ -18,16 +18,16 @@
 }
 
 .theme-carwash {
-  --color-primary: #FF6B00;
-  --color-primary-hover: #E53935;
-  --color-primary-muted: #e4955c;
-  --color-bg: #FAFAFA;
+  --color-primary: #dc2626;
+  --color-primary-hover: #c51c1c;
+  --color-primary-muted: #d97e7e;
+  --color-bg: #f8fafc;
   --color-surface: #ffffff;
-  --color-text: #2D2D2D;
-  --color-text-secondary: #757575;
+  --color-text: #1f2937;
+  --color-text-secondary: #526074;
   --color-text-muted: #b8b8b8;
-  --color-border: #E0E0E0;
-  --color-border-light: #f4c8a8;
+  --color-border: #374151;
+  --color-border-light: #374151;
 }
 
 /* Сброс стилей legend */
