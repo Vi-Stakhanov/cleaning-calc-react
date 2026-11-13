@@ -9,7 +9,7 @@ export default function Privacy() {
         onClick={() => navigate(-1)}
         className="back-button"
       >
-        ← назад
+        ← <span>назад</span>
       </button>
 
       <h1 className="card-title" style={{ fontSize: '28px', marginBottom: '24px' }}>Политика конфиденциальности</h1>

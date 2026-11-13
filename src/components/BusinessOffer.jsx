@@ -13,7 +13,10 @@ export default function BusinessOffer() {
     <div className="offer-page">
       {/* Первый экран (Hero) */}
       <div className="hero-block">
-        <span className="badge">Готовый сервис для вашего бизнеса — Запуск за 1–3 дня</span>
+        <div className="brand-header">
+          <span className="brand-name">Costyflow</span>
+          <span className="badge">Готовый сервис для вашего бизнеса — запуск за 1–3 дня</span>
+        </div>
         <h1>{offer.title}</h1>
         <p className="lead">{offer.lead}</p>
         <div className="hero-actions">
@@ -47,7 +50,7 @@ export default function BusinessOffer() {
         </div>
         <div className="step">
           <h3>2. Настраиваем приложение под вас</h3>
-          <p>Переносим ваши тарифы, формулы расчёта и логотип на платформу Costyflow за 1–3 рабочих дня. Проверяем работу и передаём готовую ссылку.</p>
+          <p>Интегрируем и настраиваем ваши тарифы, формулы расчёта и логотип на платформе Costyflow за 1–3 рабочих дня. Тестируем все расчёты и передаём вам готовое к работе приложение.</p>
         </div>
         <div className="step">
           <h3>3. Размещаете ссылку и принимаете заказы</h3>
@@ -56,7 +59,7 @@ export default function BusinessOffer() {
       </div>
 
       {/* Где подключается */}
-      <h2>Где размещается калькулятор</h2>
+      <h2>Где размещается приложение</h2>
       <div className="touchpoints">
         {(offer.touchpoints ?? []).map((t, i) => (
           <div className="touchpoint" key={i}>
@@ -69,14 +72,14 @@ export default function BusinessOffer() {
       {/* Стоимость */}
       <h2>Стоимость внедрения</h2>
       <div className="pricing">
-        <p className="price-main">от 20 000 ₽ — настройка и запуск сервиса (единоразово)</p>
+        <p className="price-main">20 000 ₽ — настройка и запуск приложения (единоразово)</p>
         <p className="price-sub">3 000 ₽/мес — обслуживание и техническая поддержка</p>
         
         <p className="price-includes">Что входит в стоимость:</p>
         <ul className="price-list">
-          <li>✓ Брендирование под вашу компанию (название, цвета, контакты, соцсети)</li>
+          <li>✓ Оформление под вашу компанию (логотип, название, контакты и ссылки на соцсети)</li>
           <li>✓ Настройка вашего прайс-листа и формул расчёта</li>
-          <li>✓ Хостинг, SSL-сертификат и ваш адрес (например, yourcompany.costyflow.ru)</li>
+          <li>✓ Домен, SSL-сертификат и ваш адрес (например, yourcompany.costyflow.ru)</li>
           <li>✓ Мгновенная отправка заявок в Telegram и на почту</li>
           <li>✓ Оперативное обновление цен и услуг по вашему запросу</li>
           <li>✓ Плавающий виджет-кнопка для установки на ваш сайт</li>
@@ -86,7 +89,7 @@ export default function BusinessOffer() {
         <p className="price-note">
           Вам не нужен программист. Вам не нужно ничего администрировать — мы берём всю техническую часть на себя.
         </p>
-        <p className="price-roi"><strong>Окупается за счёт новых заявок, которые раньше уходили без расчёта, и роста среднего чека.</strong></p>
+        <p className="price-roi"><strong>Окупается за счёт новых обращений от клиентов, которым неудобно звонить и выяснять цену вручную.</strong></p>
       </div>
 
       {/* Повторный призыв к демо */}
@@ -99,21 +102,28 @@ export default function BusinessOffer() {
       {/* Контакты */}
       <div className="contact-block">
         <h2>Хотите запустить такой же калькулятор?</h2>
-        <p>Напишите нам — ответим на вопросы и подготовим расчёт под ваш прайс.</p>
-        <p>
+        <p className='sub'>Напишите нам — ответим на вопросы и подготовим расчёт под ваш прайс.</p>
+        <p className='item'>
           <strong>Telegram:</strong>{' '}
           <a href={`https://t.me{client.telegram.replace('@', '')}`} target="_blank" rel="noopener noreferrer">
             {client.telegram}
           </a>
         </p>
-        <p>
-          <strong>MAX:</strong> {client.max || client.phone}
+        <p className='item'>
+          <strong>MAX:</strong>{' '}
+          <a
+            href={`https://max.ru/${(client.max || client.phone).replace(/\D/g, '')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {client.max || client.phone}
+          </a>
         </p>
-        <p>
+        <p className='item'>
           <strong>Телефон:</strong>{' '}
           <a href={`tel:${cleanPhone}`}>{client.phone}</a>
         </p>
-        <p className="contact-note">Готовое решение на базе платформы Costyflow. Запуск за 1–3 дня.</p>
+        <p className="contact-note">Готовое решение на базе платформы Costyflow. Запуск за 1 – 3 дня.</p>
       </div>
     </div>
   );
