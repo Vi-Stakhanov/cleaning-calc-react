@@ -105,9 +105,7 @@ export default function BusinessOffer() {
         <p className='sub'>Напишите нам — ответим на вопросы и подготовим расчёт под ваш прайс.</p>
         <p className='item'>
           <strong>Telegram:</strong>{' '}
-          <a href={`https://t.me{client.telegram.replace('@', '')}`} target="_blank" rel="noopener noreferrer">
-            {client.telegram}
-          </a>
+          <a href={`https://t.me/${client.telegram.replace('@', '')}`} target="_blank" rel="noopener noreferrer">
         </p>
         <p className='item'>
           <strong>MAX:</strong>{' '}
