@@ -152,7 +152,7 @@ function HomePage() {
           </div>
           <div className="footer-brand">
             <Link to="/privacy">Политика конфиденциальности</Link>
-            <span>Сделано в <strong>Costyflow</strong></span>
+            <span>Сделано в <a href="https://www.costyflow.ru/" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "none" }}><strong>Costyflow</strong></a></span>
           </div>
         </div>
       </footer>
