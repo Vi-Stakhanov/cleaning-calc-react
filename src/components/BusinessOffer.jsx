@@ -106,6 +106,8 @@ export default function BusinessOffer() {
         <p className='item'>
           <strong>Telegram:</strong>{' '}
           <a href={`https://t.me/${client.telegram.replace('@', '')}`} target="_blank" rel="noopener noreferrer">
+            {client.telegram}
+          </a>
         </p>
         <p className='item'>
           <strong>MAX:</strong>{' '}

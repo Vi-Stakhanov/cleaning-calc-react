@@ -6,6 +6,7 @@ import LeadForm from './components/LeadForm.jsx';
 import BusinessOffer from './components/BusinessOffer.jsx';
 import ScrollToTop from './components/ScrollToTop.jsx';
 import Privacy from './pages/Privacy.jsx';
+import MainPage from './pages/MainPage.jsx';
 import { calcPrice } from './calc.js';
 import { getClient } from './config/clients.js';
 import MobilePriceBar from './components/MobilePriceBar.jsx';
@@ -34,7 +35,14 @@ function useGlobalTheme() {
   
   useEffect(() => {
     const root = document.documentElement;
-    
+
+    // Главная страница-витрина: своя тема, без carwash
+    if (location.pathname === '/') {
+      root.classList.remove('theme-carwash');
+      localStorage.setItem('lastClient', 'cleaning');
+      return;
+    }
+
     // Запоминаем клиента при посещении главной страницы
     if (location.pathname === '/carwash') {
       localStorage.setItem('lastClient', 'carwash');
@@ -159,7 +167,7 @@ export default function App() {
     <>
       <ScrollToTop />
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<MainPage />} />
         <Route path="/:clientId" element={<HomePage />} />
         <Route path="/offer" element={<BusinessOffer />} />
         <Route path="/:clientId/offer" element={<BusinessOffer />} />
